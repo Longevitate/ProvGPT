@@ -12,7 +12,7 @@ jobs:
       packages: write
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
+      IMAGE_NAME: ghcr.io/${{ toLower(github.repository) }}:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
