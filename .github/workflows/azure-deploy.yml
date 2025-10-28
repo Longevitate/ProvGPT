@@ -11,11 +11,12 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ghcr.io/${{ toLower(github.repository) }}:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Compute lowercase image name
+        run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}:latest" >> $GITHUB_ENV
 
       - name: Login to GHCR
         uses: docker/login-action@v3
