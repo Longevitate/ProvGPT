@@ -1,0 +1,64 @@
+[
+  {
+    "id": "anc-uc-1",
+    "name": "Providence Anchorage Urgent Care - Midtown",
+    "venue": "urgent_care",
+    "lat": 61.1901,
+    "lon": -149.8875,
+    "address": { "line1": "123 Midtown Ave", "city": "Anchorage", "state": "AK", "zip": "99530" },
+    "pediatricFriendly": true,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Mon": [{ "open": "08:00", "close": "18:00" }],
+      "Tue": [{ "open": "08:00", "close": "18:00" }],
+      "Wed": [{ "open": "08:00", "close": "18:00" }],
+      "Thu": [{ "open": "08:00", "close": "18:00" }],
+      "Fri": [{ "open": "08:00", "close": "18:00" }],
+      "Sat": [{ "open": "09:00", "close": "15:00" }],
+      "Sun": []
+    },
+    "insurancePlanIds": ["plan_a", "plan_b"]
+  },
+  {
+    "id": "anc-uc-2",
+    "name": "Providence Anchorage Urgent Care - Eastside",
+    "venue": "urgent_care",
+    "lat": 61.2170,
+    "lon": -149.7800,
+    "address": { "line1": "456 Eastside Rd", "city": "Anchorage", "state": "AK", "zip": "99530" },
+    "pediatricFriendly": false,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Mon": [{ "open": "07:00", "close": "17:00" }],
+      "Tue": [{ "open": "07:00", "close": "17:00" }],
+      "Wed": [{ "open": "07:00", "close": "17:00" }],
+      "Thu": [{ "open": "07:00", "close": "17:00" }],
+      "Fri": [{ "open": "07:00", "close": "17:00" }],
+      "Sat": [],
+      "Sun": []
+    },
+    "insurancePlanIds": ["plan_b"]
+  },
+  {
+    "id": "anc-er-1",
+    "name": "Providence Alaska Medical Center - Emergency Department",
+    "venue": "er",
+    "lat": 61.1919,
+    "lon": -149.8286,
+    "address": { "line1": "3200 Providence Dr", "city": "Anchorage", "state": "AK", "zip": "99508" },
+    "pediatricFriendly": true,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Mon": [{ "open": "00:00", "close": "23:59" }],
+      "Tue": [{ "open": "00:00", "close": "23:59" }],
+      "Wed": [{ "open": "00:00", "close": "23:59" }],
+      "Thu": [{ "open": "00:00", "close": "23:59" }],
+      "Fri": [{ "open": "00:00", "close": "23:59" }],
+      "Sat": [{ "open": "00:00", "close": "23:59" }],
+      "Sun": [{ "open": "00:00", "close": "23:59" }]
+    },
+    "insurancePlanIds": ["plan_a", "plan_b", "plan_c"]
+  }
+]
+
+

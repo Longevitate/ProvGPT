@@ -1,0 +1,64 @@
+[
+  {
+    "id": "sea-uc-1",
+    "name": "Providence Seattle Urgent Care - Downtown",
+    "venue": "urgent_care",
+    "lat": 47.6080,
+    "lon": -122.3350,
+    "address": { "line1": "100 Pine St", "city": "Seattle", "state": "WA", "zip": "98101" },
+    "pediatricFriendly": true,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Mon": [{ "open": "08:00", "close": "20:00" }],
+      "Tue": [{ "open": "08:00", "close": "20:00" }],
+      "Wed": [{ "open": "08:00", "close": "20:00" }],
+      "Thu": [{ "open": "08:00", "close": "20:00" }],
+      "Fri": [{ "open": "08:00", "close": "20:00" }],
+      "Sat": [{ "open": "09:00", "close": "17:00" }],
+      "Sun": []
+    },
+    "insurancePlanIds": ["plan_a", "plan_c"]
+  },
+  {
+    "id": "sea-pc-1",
+    "name": "Providence Primary Care - Capitol Hill",
+    "venue": "primary_care",
+    "lat": 47.6239,
+    "lon": -122.3190,
+    "address": { "line1": "500 15th Ave E", "city": "Seattle", "state": "WA", "zip": "98112" },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Mon": [{ "open": "08:30", "close": "17:30" }],
+      "Tue": [{ "open": "08:30", "close": "17:30" }],
+      "Wed": [{ "open": "08:30", "close": "17:30" }],
+      "Thu": [{ "open": "08:30", "close": "17:30" }],
+      "Fri": [{ "open": "08:30", "close": "17:30" }],
+      "Sat": [],
+      "Sun": []
+    },
+    "insurancePlanIds": ["plan_b"]
+  },
+  {
+    "id": "sea-er-1",
+    "name": "Providence Swedish First Hill - Emergency Department",
+    "venue": "er",
+    "lat": 47.6102,
+    "lon": -122.3265,
+    "address": { "line1": "747 Broadway", "city": "Seattle", "state": "WA", "zip": "98122" },
+    "pediatricFriendly": true,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Mon": [{ "open": "00:00", "close": "23:59" }],
+      "Tue": [{ "open": "00:00", "close": "23:59" }],
+      "Wed": [{ "open": "00:00", "close": "23:59" }],
+      "Thu": [{ "open": "00:00", "close": "23:59" }],
+      "Fri": [{ "open": "00:00", "close": "23:59" }],
+      "Sat": [{ "open": "00:00", "close": "23:59" }],
+      "Sun": [{ "open": "00:00", "close": "23:59" }]
+    },
+    "insurancePlanIds": ["plan_a", "plan_b", "plan_c"]
+  }
+]
+
+
