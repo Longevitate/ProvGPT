@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Policy – Providence Find Care Demo</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; margin: 2rem; max-width: 800px; }
+      h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+      h2 { font-size: 1.25rem; margin-top: 1.5rem; }
+      code { background: #f4f4f5; padding: 0.1rem 0.3rem; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>Privacy Policy – Providence Find Care (Demo)</h1>
+    <p>Last updated: <strong><script>document.write(new Date().toISOString().slice(0,10))</script></strong></p>
+
+    <p>
+      This is a demonstration application (“Demo”) that helps users choose an appropriate care venue (ER, urgent, primary, or virtual),
+      find nearby Providence locations, view mock availability, and generate a mock booking deep link. It is not intended for real patient care,
+      and it does not diagnose conditions.
+    </p>
+
+    <h2>What data we process</h2>
+    <ul>
+      <li><strong>Symptoms and preferences you type</strong> are sent to our backend solely to fulfill your request (triage, location search, availability, mock booking).</li>
+      <li><strong>No PHI is stored</strong>. We do not persist user-entered symptoms, ages, or booking selections in any database.</li>
+      <li><strong>Patient context token</strong> (if provided) is treated as an opaque, short‑lived string and is not used to identify you.</li>
+      <li><strong>Standard service logs</strong> (e.g., IP address, user agent, timestamps, request path/status) may be recorded by our hosting provider
+        for reliability and security. These logs are not linked to any medical information you provide.</li>
+    </ul>
+
+    <h2>Third‑party services</h2>
+    <ul>
+      <li><strong>Hosting</strong>: Azure App Service (Microsoft) runs the containerized backend.</li>
+      <li><strong>CI/CD & container registry</strong>: GitHub Actions and GHCR are used to build and distribute the demo container image.</li>
+      <li><strong>Maps</strong>: A simple Google Maps link (<code>https://maps.google.com/?q=lat,lon</code>) is displayed in an iframe; no map API keys are used.</li>
+    </ul>
+
+    <h2>Retention</h2>
+    <p>
+      We do not intentionally store user‑entered content. Hosting platform access logs may be retained for up to 30 days for operational purposes and then discarded.
+    </p>
+
+    <h2>Security</h2>
+    <p>
+      Transport is encrypted via HTTPS. This demo avoids persistent identifiers and does not store medical content server‑side.
+      As a demonstration, it has not undergone formal security certification.
+    </p>
+
+    <h2>Your choices</h2>
+    <ul>
+      <li>Do not enter real personal or medical details; use test data only.</li>
+      <li>You may close your browser or stop using the demo at any time.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>
+      For questions about this demo or this policy, please contact the repository owner or open an issue on the project’s GitHub repository.
+    </p>
+
+  </body>
+  </html>
+
+
