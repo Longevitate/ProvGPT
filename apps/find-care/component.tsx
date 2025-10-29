@@ -36,7 +36,7 @@ export default async function FindCareComponent(props: Props): Promise<JSX.Eleme
   return (
     <div className="flex flex-col gap-3 text-sm">
       <div className="flex items-center gap-2">
-        <span className="px-2 py-1 rounded bg-slate-100">Location: {props.lat.toFixed(3)},{props.lon.toFixed(3)}</span>
+        <span className="px-2 py-1 rounded bg-slate-100">Location: {props.results[0]?.address.city ?? `${props.lat.toFixed(3)},${props.lon.toFixed(3)}`}</span>
         <span className="px-2 py-1 rounded bg-emerald-100 capitalize">{props.venue.replace("_", " ")}</span>
         {props.acceptsInsurancePlanId && (
           <span className="px-2 py-1 rounded bg-indigo-100">Plan: {props.acceptsInsurancePlanId}</span>
@@ -59,6 +59,10 @@ export default async function FindCareComponent(props: Props): Promise<JSX.Eleme
                 )}
               </div>
               <div className="text-xs text-slate-700">{f.address.line1}, {f.address.city}, {f.address.state} {f.address.zip}</div>
+              <div className="text-xs text-slate-600">Why: {(f.openNow ? "Open now" : "Closed")}, {f.distance.toFixed(1)} mi{props.acceptsInsurancePlanId ? 
+                (((f.insurancePlanIds||[]).includes(props.acceptsInsurancePlanId)) ? ", in-network" : ", out-of-network") : ""}
+                {nextSlotsMap[f.id] && nextSlotsMap[f.id][0] ? ", soonest " + new Date(nextSlotsMap[f.id][0]).toLocaleString() : ""}
+              </div>
               {nextSlotsMap[f.id] && nextSlotsMap[f.id].length > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-600">Soonest:</span>
