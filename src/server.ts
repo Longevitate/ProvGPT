@@ -12,15 +12,29 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-// Be tolerant to various Content-Types from external callers (ChatGPT tools, etc.)
-// Parse text bodies for any type, then JSON-parse if possible. This avoids 400s from strict JSON parser.
+// Prefer native JSON and urlencoded parsing first for standard clients
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// Fallback: accept arbitrary text and coerce JSON-looking strings into objects
 app.use(express.text({ type: "*/*" }));
 app.use((req, _res, next) => {
-  if (typeof req.body === "string" && req.body.length > 0) {
-    try {
-      req.body = JSON.parse(req.body);
-    } catch {
-      // leave as string if not JSON
+  if (req.headers["content-type"] && String(req.headers["content-type"]).includes("application/json")) {
+    // If JSON was expected but not parsed, try to coerce
+    if (typeof req.body === "string" && req.body.trim().length > 0) {
+      try {
+        req.body = JSON.parse(req.body);
+      } catch {
+        // keep as string
+      }
+    }
+  } else if (typeof req.body === "string") {
+    const t = req.body.trim();
+    if ((t.startsWith("{") && t.endsWith("}")) || (t.startsWith("[") && t.endsWith("]"))) {
+      try {
+        req.body = JSON.parse(t);
+      } catch {
+        // keep as string
+      }
     }
   }
   next();
