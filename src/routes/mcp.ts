@@ -134,11 +134,15 @@ mcpRouter.post("/", async (req, res) => {
 				return res.json(
 					makeRes({
 						serverInfo: { name: "Providence Find Care Demo", version: "0.1.0" },
+						protocolVersion: "2024-11-05",
 						capabilities: { tools: { list: true, call: true }, resources: { list: true, read: true } }
 					})
 				);
 			}
 			case "tools/list": {
+				return res.json(makeRes({ tools }));
+			}
+			case "listTools": {
 				return res.json(makeRes({ tools }));
 			}
 			case "tools/call": {
@@ -147,7 +151,25 @@ mcpRouter.post("/", async (req, res) => {
 				// MCP expects content array
 				return res.json(makeRes({ content: [{ type: "json", json: out }] }));
 			}
+			case "callTool": {
+				const { name, arguments: args } = reqBody.params || {};
+				const out = await callTool(name, args);
+				return res.json(makeRes({ content: [{ type: "json", json: out }] }));
+			}
 			case "resources/list": {
+				return res.json(
+					makeRes({
+						resources: [
+							{
+								uri: "component://find-care",
+								name: "find-care-component",
+								mimeType: "text/tsx"
+							}
+						]
+					})
+				);
+			}
+			case "resources/ls": {
 				return res.json(
 					makeRes({
 						resources: [
@@ -173,6 +195,23 @@ mcpRouter.post("/", async (req, res) => {
 						]
 					})
 				);
+			}
+			case "resources/get": {
+				const { uri } = reqBody.params || {};
+				if (uri !== "component://find-care") {
+					return res.status(404).json(makeRes(undefined, { code: -32601, message: "Not found" }));
+				}
+				const src = componentSource() ?? "// component source not found";
+				return res.json(
+					makeRes({
+						contents: [
+							{ uri, mimeType: "text/tsx", text: src }
+						]
+					})
+				);
+			}
+			case "ping": {
+				return res.json(makeRes({ ok: true }));
 			}
 			default:
 				return res.status(400).json(makeRes(undefined, { code: -32601, message: "Method not found" }));
