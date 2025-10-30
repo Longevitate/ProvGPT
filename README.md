@@ -60,6 +60,17 @@ docker compose up --build
 ```
 App listens on `0.0.0.0:${PORT}`.
 
+### Connecting from ChatGPT (Apps/Connectors)
+1. Deploy or run the service so `https://provgpt.azurewebsites.net/mcp` (or your local tunnel) is reachable.
+2. In ChatGPT: **Settings → Apps & Connectors → Create → Connector**.
+3. Use the MCP endpoint URL (`https://provgpt.azurewebsites.net/mcp`) and leave authentication blank.
+4. After creation, ChatGPT lists the four tools (`triage_v1`, `search_facilities_v1`, `get_availability_v1`, `book_appointment_v1`) and the `component://find-care` resource.
+5. In a new chat, add the connector (➕ → **More** → your connector) and ask, for example, “Ear pain, 12-year-old, in 99530. Aetna POS.” to walk through triage, facility search, availability, and booking.
+
+Troubleshooting (Azure App Service):
+- Tail logs with `az webapp log tail --name <APP> --resource-group <RG>` to see MCP request/response traces.
+- Ensure WebSockets/SSE are enabled on the App Service (they are in the sample `azurewebsites.net` deployment).
+
 ### Azure Deployment (App Service, container)
 1. Create resources (example)
 ```bash
