@@ -221,4 +221,25 @@ mcpRouter.post("/", async (req, res) => {
 	}
 });
 
+// Minimal SSE endpoint to satisfy MCP connectors that expect an event stream handshake
+mcpRouter.get("/", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders?.();
+
+  // Send a simple ready event; clients typically keep the stream open
+  const ready = { jsonrpc: "2.0", id: null, method: "ready" };
+  res.write(`event: message\n`);
+  res.write(`data: ${JSON.stringify(ready)}\n\n`);
+
+  const keepAlive = setInterval(() => {
+    res.write(`: keep-alive\n\n`);
+  }, 15000);
+
+  req.on("close", () => {
+    clearInterval(keepAlive);
+  });
+});
+
 
