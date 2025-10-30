@@ -1,13 +1,13 @@
 FROM node:20-slim AS base
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+COPY package.json ./
+RUN npm install --omit=dev
 
 FROM node:20-slim AS build
 WORKDIR /app
 COPY . .
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
 FROM node:20-slim AS runtime
 ENV NODE_ENV=production
