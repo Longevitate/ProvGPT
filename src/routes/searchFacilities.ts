@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { haversineMiles } from "../lib/geo.js";
 import { isOpenNow } from "../lib/hours.js";
+import { coerceJsonBody } from "../utils/coerceJsonBody.js";
 
 export type Facility = {
 	id: string;
@@ -103,7 +104,8 @@ function computeResults(
 }
 
 searchFacilitiesRouter.post("/", (req, res) => {
-	const parsed = bodySchema.safeParse(req.body);
+        const body = coerceJsonBody(req.body);
+        const parsed = bodySchema.safeParse(body);
 	if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
 	const { lat, lon, radiusMiles, venue, acceptsInsurancePlanId, acceptsInsurancePlanName, openNow, pediatricFriendly, zip } = parsed.data;
 

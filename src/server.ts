@@ -15,25 +15,24 @@ app.use(cors());
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Fallback: accept arbitrary text and coerce JSON-looking strings into objects
-app.use(express.text({ type: "*/*" }));
+// Fallback: accept text bodies (including JSON sent with text/* or application/*+json)
+app.use(
+  express.text({
+    type: ["text/*", "application/*+json"],
+    limit: "1mb"
+  })
+);
 app.use((req, _res, next) => {
-  if (req.headers["content-type"] && String(req.headers["content-type"]).includes("application/json")) {
-    // If JSON was expected but not parsed, try to coerce
-    if (typeof req.body === "string" && req.body.trim().length > 0) {
+  if (typeof req.body === "string") {
+    const trimmed = req.body.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
       try {
-        req.body = JSON.parse(req.body);
+        req.body = JSON.parse(trimmed);
       } catch {
-        // keep as string
-      }
-    }
-  } else if (typeof req.body === "string") {
-    const t = req.body.trim();
-    if ((t.startsWith("{") && t.endsWith("}")) || (t.startsWith("[") && t.endsWith("]"))) {
-      try {
-        req.body = JSON.parse(t);
-      } catch {
-        // keep as string
+        // keep as string for downstream handlers to decide how to handle
       }
     }
   }
