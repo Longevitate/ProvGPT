@@ -134,7 +134,7 @@ mcpRouter.post("/", async (req, res) => {
 				return res.json(
 					makeRes({
 						serverInfo: { name: "Providence Find Care Demo", version: "0.1.0" },
-						capabilities: { tools: {}, resources: {} }
+						capabilities: { tools: { list: true, call: true }, resources: { list: true, read: true } }
 					})
 				);
 			}
