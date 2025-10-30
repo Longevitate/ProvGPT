@@ -3,6 +3,7 @@ import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import { nextSlotsWithinDays } from "../lib/hours.js";
+import { coerceJsonBody } from "../utils/coerceJsonBody.js";
 const facilities = [];
 function getFacilities() {
     if (facilities.length > 0)
@@ -38,7 +39,8 @@ const bodySchema = z.object({
     days: z.number().int().min(1).max(14).default(7)
 });
 availabilityRouter.post("/", (req, res) => {
-    const parsed = bodySchema.safeParse(req.body);
+    const body = coerceJsonBody(req.body);
+    const parsed = bodySchema.safeParse(body);
     if (!parsed.success)
         return res.status(400).json({ error: parsed.error.flatten() });
     const { facilityId, serviceCode, days } = parsed.data;

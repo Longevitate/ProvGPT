@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import type { Facility } from "./searchFacilities.js";
 import { nextSlotsWithinDays } from "../lib/hours.js";
+import { coerceJsonBody } from "../utils/coerceJsonBody.js";
 
 const facilities: Facility[] = [];
 function getFacilities(): Facility[] {
@@ -43,7 +44,8 @@ const bodySchema = z.object({
 });
 
 availabilityRouter.post("/", (req, res) => {
-  const parsed = bodySchema.safeParse(req.body);
+  const body = coerceJsonBody(req.body);
+  const parsed = bodySchema.safeParse(body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { facilityId, serviceCode, days } = parsed.data;
   const fac = getFacilities().find((f) => f.id === facilityId);

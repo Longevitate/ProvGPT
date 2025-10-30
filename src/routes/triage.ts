@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { detectRedFlags, recommendVenue } from "../lib/redFlags.js";
+import { coerceJsonBody } from "../utils/coerceJsonBody.js";
 
 export const triageRouter = Router();
 
@@ -12,7 +13,19 @@ const bodySchema = z.object({
 });
 
 triageRouter.post("/", (req, res) => {
-  const parsed = bodySchema.safeParse(req.body);
+  const contentType = req.headers["content-type"] ?? "<undefined>";
+  const bodyType = typeof req.body;
+  const preview =
+    bodyType === "string"
+      ? String(req.body)
+          .replace(/\s+/g, " ")
+          .slice(0, 100)
+      : undefined;
+  console.log("[triage] content-type=%s type=%s preview=%s", contentType, bodyType, preview);
+
+  const body = coerceJsonBody(req.body);
+
+  const parsed = bodySchema.safeParse(body);
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.flatten() });
   }
