@@ -179,10 +179,11 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       });
     }
     case "tools/call": {
-      const { name, arguments: args } = (reqBody.params ?? {}) as {
-        name?: string;
-        arguments?: Record<string, unknown>;
-      };
+      const rawParams = (reqBody.params ?? {}) as Record<string, unknown>;
+      const name = (rawParams as any).name as string | undefined;
+      const args = ((rawParams as any).arguments ?? (rawParams as any).args) as
+        | Record<string, unknown>
+        | undefined;
       if (!name) {
         return makeResponse(reqBody, undefined, {
           code: -32602,
