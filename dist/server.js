@@ -6,6 +6,7 @@ import { triageRouter } from "./routes/triage.js";
 import { searchFacilitiesRouter } from "./routes/searchFacilities.js";
 import { availabilityRouter } from "./routes/availability.js";
 import { bookRouter } from "./routes/book.js";
+import { mcpRouter } from "./routes/mcp.js";
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);
 app.use("/api/book", bookRouter);
+app.use("/mcp", mcpRouter);
 // Serve static assets if needed (placeholder)
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 const PORT = Number(process.env.PORT || 8080);
