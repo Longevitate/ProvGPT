@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Response as ExpressResponse } from "express";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -22,6 +22,33 @@ interface ToolDefinition {
   description: string;
   inputSchema: Record<string, unknown>;
 }
+
+interface DownstreamRecord {
+  name: string;
+  status: string;
+  durationMs?: number;
+  error?: string;
+}
+
+type ToolCallEnvelope =
+  | {
+      ok: true;
+      correlationId: string;
+      data: unknown;
+      downstream?: DownstreamRecord[];
+    }
+  | {
+      ok: false;
+      correlationId: string;
+      error: {
+        code: string;
+        message: string;
+        downstream?: DownstreamRecord[];
+        details?: unknown;
+      };
+    };
+
+type FetchResponse = globalThis.Response;
 
 const tools: ToolDefinition[] = [
   {
@@ -117,7 +144,7 @@ const COMPONENT_RESOURCE = {
   mimeType: "text/tsx",
 };
 
-const sseClients = new Map<string, Response>();
+const sseClients = new Map<string, ExpressResponse>();
 
 function componentSource(): string | null {
   const filePath = path.join(process.cwd(), "apps", "find-care", "component.tsx");
@@ -131,7 +158,7 @@ async function callTool(
   name: string,
   args: Record<string, unknown> | undefined,
   correlationId: string,
-) {
+): Promise<ToolCallEnvelope> {
   const base = `http://127.0.0.1:${process.env.PORT || 8080}`;
   const payload = JSON.stringify(args ?? {});
   const headers = { "content-type": "application/json", "x-correlation-id": correlationId } as Record<string, string>;
@@ -143,7 +170,7 @@ async function callTool(
     ]);
   }
 
-  async function fetchSafe(url: string, init: any, timeoutMs = 5000, retries = 1): Promise<any> {
+  async function fetchSafe(url: string, init: any, timeoutMs = 5000, retries = 1): Promise<FetchResponse> {
     let lastErr: unknown;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -161,6 +188,18 @@ async function callTool(
     throw lastErr;
   }
 
+  async function parseJsonSafe(response: FetchResponse): Promise<unknown> {
+    const text = await response.text();
+    if (!text) {
+      return {};
+    }
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { raw: text };
+    }
+  }
+
   switch (name) {
     case "triage_v1": {
       const startedAt = Date.now();
@@ -168,42 +207,84 @@ async function callTool(
       try {
         const response = await fetchSafe(`${base}/api/triage`, { method: "POST", headers, body: payload }, 5000, 1);
         const durationMs = Date.now() - startedAt;
-        const text = await response.text();
-        let json: any;
-        try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+        const downstream = [{ name: "triage_local", status: `http_${response.status}`, durationMs }];
+        const json = await parseJsonSafe(response);
         if (!response.ok) {
-          console.warn("[mcp] call fail cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+          console.warn(
+            "[mcp] call fail cid=%s tool=%s status=%d durationMs=%d",
+            correlationId,
+            name,
+            response.status,
+            durationMs,
+          );
           return {
+            ok: false,
+            correlationId,
             error: {
               code: "TRIAGE_DEPENDENCY_FAILURE",
               message: "Downstream triage endpoint returned non-200.",
-              correlationId,
-              downstream: [
-                { name: "triage_local", status: `http_${response.status}`, durationMs }
-              ],
+              downstream,
             },
           };
         }
-        console.info("[mcp] call ok cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
-        return json;
+        console.info(
+          "[mcp] call ok cid=%s tool=%s status=%d durationMs=%d",
+          correlationId,
+          name,
+          response.status,
+          durationMs,
+        );
+        return { ok: true, correlationId, data: json, downstream };
       } catch (err: any) {
         const durationMs = Date.now() - startedAt;
         console.error("[mcp] call error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
         return {
+          ok: false,
+          correlationId,
           error: {
             code: "TRIAGE_DEPENDENCY_FAILURE",
             message: "Exception calling downstream triage endpoint.",
-            correlationId,
             downstream: [
-              { name: "triage_local", status: "exception", error: String(err?.message ?? err), durationMs }
+              { name: "triage_local", status: "exception", error: String(err?.message ?? err), durationMs },
             ],
           },
         };
       }
     }
     case "triage_canary": {
-      const response = await fetchSafe(`${base}/api/triage_canary`, { method: "GET", headers }, 3000, 0);
-      return response.json();
+      const startedAt = Date.now();
+      try {
+        const response = await fetchSafe(`${base}/api/triage_canary`, { method: "GET", headers }, 3000, 0);
+        const durationMs = Date.now() - startedAt;
+        const downstream = [{ name: "triage_canary_local", status: `http_${response.status}`, durationMs }];
+        const json = await parseJsonSafe(response);
+        if (!response.ok) {
+          return {
+            ok: false,
+            correlationId,
+            error: {
+              code: "TRIAGE_CANARY_FAILURE",
+              message: "Triage canary returned non-200.",
+              downstream,
+            },
+          };
+        }
+        return { ok: true, correlationId, data: json, downstream };
+      } catch (err: any) {
+        const durationMs = Date.now() - startedAt;
+        console.error("[mcp] canary error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
+        return {
+          ok: false,
+          correlationId,
+          error: {
+            code: "TRIAGE_CANARY_FAILURE",
+            message: "Exception calling triage canary endpoint.",
+            downstream: [
+              { name: "triage_canary_local", status: "exception", error: String(err?.message ?? err), durationMs },
+            ],
+          },
+        };
+      }
     }
     case "search_facilities_v1": {
       const startedAt = Date.now();
@@ -211,49 +292,130 @@ async function callTool(
       try {
         const response = await fetchSafe(`${base}/api/search-facilities`, { method: "POST", headers, body: payload }, 7000, 1);
         const durationMs = Date.now() - startedAt;
-        const text = await response.text();
-        let json: any;
-        try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+        const downstream = [{ name: "search_local", status: `http_${response.status}`, durationMs }];
+        const json = await parseJsonSafe(response);
         if (!response.ok) {
-          console.warn("[mcp] call fail cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+          console.warn(
+            "[mcp] call fail cid=%s tool=%s status=%d durationMs=%d",
+            correlationId,
+            name,
+            response.status,
+            durationMs,
+          );
           return {
+            ok: false,
+            correlationId,
             error: {
               code: "SEARCH_DEPENDENCY_FAILURE",
               message: "Downstream search endpoint returned non-200.",
-              correlationId,
-              downstream: [
-                { name: "search_local", status: `http_${response.status}`, durationMs }
-              ],
+              downstream,
             },
           };
         }
-        console.info("[mcp] call ok cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
-        return json;
+        console.info(
+          "[mcp] call ok cid=%s tool=%s status=%d durationMs=%d",
+          correlationId,
+          name,
+          response.status,
+          durationMs,
+        );
+        return { ok: true, correlationId, data: json, downstream };
       } catch (err: any) {
         const durationMs = Date.now() - startedAt;
         console.error("[mcp] call error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
         return {
+          ok: false,
+          correlationId,
           error: {
             code: "SEARCH_DEPENDENCY_FAILURE",
             message: "Exception calling downstream search endpoint.",
-            correlationId,
             downstream: [
-              { name: "search_local", status: "exception", error: String(err?.message ?? err), durationMs }
+              { name: "search_local", status: "exception", error: String(err?.message ?? err), durationMs },
             ],
           },
         };
       }
     }
     case "get_availability_v1": {
-      const response = await fetchSafe(`${base}/api/availability`, { method: "POST", headers, body: payload }, 5000, 1);
-      return response.json();
+      const startedAt = Date.now();
+      try {
+        const response = await fetchSafe(`${base}/api/availability`, { method: "POST", headers, body: payload }, 5000, 1);
+        const durationMs = Date.now() - startedAt;
+        const downstream = [{ name: "availability_local", status: `http_${response.status}`, durationMs }];
+        const json = await parseJsonSafe(response);
+        if (!response.ok) {
+          return {
+            ok: false,
+            correlationId,
+            error: {
+              code: "AVAILABILITY_DEPENDENCY_FAILURE",
+              message: "Downstream availability endpoint returned non-200.",
+              downstream,
+            },
+          };
+        }
+        return { ok: true, correlationId, data: json, downstream };
+      } catch (err: any) {
+        const durationMs = Date.now() - startedAt;
+        console.error("[mcp] availability error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
+        return {
+          ok: false,
+          correlationId,
+          error: {
+            code: "AVAILABILITY_DEPENDENCY_FAILURE",
+            message: "Exception calling downstream availability endpoint.",
+            downstream: [
+              { name: "availability_local", status: "exception", error: String(err?.message ?? err), durationMs },
+            ],
+          },
+        };
+      }
     }
     case "book_appointment_v1": {
-      const response = await fetchSafe(`${base}/api/book`, { method: "POST", headers, body: payload }, 5000, 1);
-      return response.json();
+      const startedAt = Date.now();
+      try {
+        const response = await fetchSafe(`${base}/api/book`, { method: "POST", headers, body: payload }, 5000, 1);
+        const durationMs = Date.now() - startedAt;
+        const downstream = [{ name: "book_local", status: `http_${response.status}`, durationMs }];
+        const json = await parseJsonSafe(response);
+        if (!response.ok) {
+          return {
+            ok: false,
+            correlationId,
+            error: {
+              code: "BOOK_DEPENDENCY_FAILURE",
+              message: "Downstream booking endpoint returned non-200.",
+              downstream,
+            },
+          };
+        }
+        return { ok: true, correlationId, data: json, downstream };
+      } catch (err: any) {
+        const durationMs = Date.now() - startedAt;
+        console.error("[mcp] booking error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
+        return {
+          ok: false,
+          correlationId,
+          error: {
+            code: "BOOK_DEPENDENCY_FAILURE",
+            message: "Exception calling downstream booking endpoint.",
+            downstream: [
+              { name: "book_local", status: "exception", error: String(err?.message ?? err), durationMs },
+            ],
+          },
+        };
+      }
     }
     default:
-      throw new Error(`Unknown tool: ${name}`);
+      console.warn("[mcp] unknown tool requested cid=%s tool=%s", correlationId, name);
+      return {
+        ok: false,
+        correlationId,
+        error: {
+          code: "UNKNOWN_TOOL",
+          message: `Unknown tool: ${name}`,
+        },
+      };
   }
 }
 
@@ -305,12 +467,14 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       }
       // Handle in-process ping without any HTTP calls
       if (name === "mcp_ping") {
+        const pingCorrelationId = randomUUID();
         return makeResponse(reqBody, {
           content: [
             {
               type: "json",
               json: {
                 ok: true,
+                correlationId: pingCorrelationId,
                 now: new Date().toISOString(),
                 role: "node-mcp",
               },
@@ -403,7 +567,7 @@ function broadcastToSseClients(response: JsonRpcResponse) {
   }
 }
 
-function createSseConnection(res: Response) {
+function createSseConnection(res: ExpressResponse) {
   const clientId = randomUUID();
   sseClients.set(clientId, res);
   res.write(`event: message\n`);
@@ -421,7 +585,8 @@ export const mcpRouter = Router();
 
 mcpRouter.post("/", async (req, res) => {
   let reqBody: JsonRpcRequest | undefined;
-  const cid = (req as any).correlationId ?? "<none>";
+  const cid = (req as any).correlationId ?? randomUUID();
+  (req as any).correlationId = cid;
   try {
     const bodyType = typeof req.body;
     const size = req.headers["content-length"] ?? "-";
@@ -431,10 +596,11 @@ mcpRouter.post("/", async (req, res) => {
       try {
         reqBody = JSON.parse(raw) as JsonRpcRequest;
       } catch (e) {
-        return res.status(400).json({
+        console.warn("[mcp] parse_error cid=%s", cid);
+        return res.status(200).json({
           jsonrpc: "2.0",
           id: null,
-          error: { code: -32700, message: "Parse error: invalid JSON" },
+          error: { code: -32700, message: "Parse error: invalid JSON", data: { correlationId: cid } },
         });
       }
     } else {
@@ -442,10 +608,11 @@ mcpRouter.post("/", async (req, res) => {
     }
   } catch {}
   if (!reqBody || reqBody.jsonrpc !== "2.0" || typeof reqBody.method !== "string") {
-    return res.status(400).json({
+    console.warn("[mcp] invalid_request cid=%s", cid);
+    return res.status(200).json({
       jsonrpc: "2.0",
       id: reqBody?.id ?? null,
-      error: { code: -32600, message: "Invalid Request" },
+      error: { code: -32600, message: "Invalid Request", data: { correlationId: cid } },
     });
   }
 
@@ -455,12 +622,13 @@ mcpRouter.post("/", async (req, res) => {
     return res.json(rpcResponse);
   } catch (err) {
     console.error(`[MCP] Error handling method ${reqBody.method}:`, err);
-    return res.status(500).json({
+    return res.status(200).json({
       jsonrpc: "2.0",
       id: reqBody.id ?? null,
       error: {
         code: -32000,
         message: err instanceof Error ? err.message : "Unexpected server error",
+        data: { correlationId: cid },
       },
     });
   }

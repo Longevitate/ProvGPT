@@ -13,7 +13,7 @@ dotenv.config();
 
 export const app = express();
 app.use(cors());
-// Correlation ID middleware
+// Correlation ID middleware (run once, before any handlers)
 app.use((req, _res, next) => {
   const existing = req.headers["x-correlation-id"];
   (req as any).correlationId = String(existing || randomUUID());
@@ -28,7 +28,10 @@ app.use((req, _res, next) => {
 });
 
 // Mount MCP early with tolerant body handling to avoid strict JSON parse failures
-app.use("/mcp", express.text({ type: ["application/json", "text/*", "application/*+json", "*/*"], limit: "1mb" }));
+app.use(
+  "/mcp",
+  express.text({ type: ["application/json", "text/*", "application/*+json", "*/*"], limit: "1mb" }),
+);
 app.use("/mcp", mcpRouter);
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
@@ -69,22 +72,6 @@ app.get("/api/triage_canary", (_req, res) => {
     version: process.env.BUILD_SHA || "dev",
     time: new Date().toISOString(),
   });
-});
-
-// Correlation ID middleware
-app.use((req, _res, next) => {
-  // propagate or assign a correlation id early
-  const existing = req.headers["x-correlation-id"];
-  (req as any).correlationId = String(existing || randomUUID());
-  next();
-});
-
-// Entry logging to verify platform routing reaches Node
-app.use((req, _res, next) => {
-  const cid = (req as any).correlationId;
-  const len = req.headers["content-length"];
-  console.info("[entry] cid=%s %s %s len=%s", cid, req.method, req.url, len ?? "-");
-  next();
 });
 
 app.use("/api/triage", triageRouter);
