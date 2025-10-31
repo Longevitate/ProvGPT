@@ -354,12 +354,26 @@ function createSseConnection(res: Response) {
 export const mcpRouter = Router();
 
 mcpRouter.post("/", async (req, res) => {
-  const reqBody = req.body as JsonRpcRequest;
+  let reqBody: JsonRpcRequest | undefined;
   const cid = (req as any).correlationId ?? "<none>";
   try {
     const bodyType = typeof req.body;
     const size = req.headers["content-length"] ?? "-";
     console.info("[mcp] entry cid=%s type=%s size=%s", cid, bodyType, size);
+    if (bodyType === "string") {
+      const raw = (req.body as unknown as string).trim();
+      try {
+        reqBody = JSON.parse(raw) as JsonRpcRequest;
+      } catch (e) {
+        return res.status(400).json({
+          jsonrpc: "2.0",
+          id: null,
+          error: { code: -32700, message: "Parse error: invalid JSON" },
+        });
+      }
+    } else {
+      reqBody = req.body as JsonRpcRequest;
+    }
   } catch {}
   if (!reqBody || reqBody.jsonrpc !== "2.0" || typeof reqBody.method !== "string") {
     return res.status(400).json({
