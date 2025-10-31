@@ -163,20 +163,86 @@ async function callTool(
 
   switch (name) {
     case "triage_v1": {
-      const response = await fetchSafe(`${base}/api/triage`, { method: "POST", headers, body: payload }, 5000, 1);
-      return response.json();
+      const startedAt = Date.now();
+      console.info("[mcp] call start cid=%s tool=%s", correlationId, name);
+      try {
+        const response = await fetchSafe(`${base}/api/triage`, { method: "POST", headers, body: payload }, 5000, 1);
+        const durationMs = Date.now() - startedAt;
+        const text = await response.text();
+        let json: any;
+        try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+        if (!response.ok) {
+          console.warn("[mcp] call fail cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+          return {
+            error: {
+              code: "TRIAGE_DEPENDENCY_FAILURE",
+              message: "Downstream triage endpoint returned non-200.",
+              correlationId,
+              downstream: [
+                { name: "triage_local", status: `http_${response.status}`, durationMs }
+              ],
+            },
+          };
+        }
+        console.info("[mcp] call ok cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+        return json;
+      } catch (err: any) {
+        const durationMs = Date.now() - startedAt;
+        console.error("[mcp] call error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
+        return {
+          error: {
+            code: "TRIAGE_DEPENDENCY_FAILURE",
+            message: "Exception calling downstream triage endpoint.",
+            correlationId,
+            downstream: [
+              { name: "triage_local", status: "exception", error: String(err?.message ?? err), durationMs }
+            ],
+          },
+        };
+      }
     }
     case "triage_canary": {
       const response = await fetchSafe(`${base}/api/triage_canary`, { method: "GET", headers }, 3000, 0);
       return response.json();
     }
     case "search_facilities_v1": {
-      const response = await fetchSafe(`${base}/api/search-facilities`, {
-        method: "POST",
-        headers,
-        body: payload,
-      }, 7000, 1);
-      return response.json();
+      const startedAt = Date.now();
+      console.info("[mcp] call start cid=%s tool=%s", correlationId, name);
+      try {
+        const response = await fetchSafe(`${base}/api/search-facilities`, { method: "POST", headers, body: payload }, 7000, 1);
+        const durationMs = Date.now() - startedAt;
+        const text = await response.text();
+        let json: any;
+        try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+        if (!response.ok) {
+          console.warn("[mcp] call fail cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+          return {
+            error: {
+              code: "SEARCH_DEPENDENCY_FAILURE",
+              message: "Downstream search endpoint returned non-200.",
+              correlationId,
+              downstream: [
+                { name: "search_local", status: `http_${response.status}`, durationMs }
+              ],
+            },
+          };
+        }
+        console.info("[mcp] call ok cid=%s tool=%s status=%d durationMs=%d", correlationId, name, response.status, durationMs);
+        return json;
+      } catch (err: any) {
+        const durationMs = Date.now() - startedAt;
+        console.error("[mcp] call error cid=%s tool=%s durationMs=%d err=%o", correlationId, name, durationMs, err);
+        return {
+          error: {
+            code: "SEARCH_DEPENDENCY_FAILURE",
+            message: "Exception calling downstream search endpoint.",
+            correlationId,
+            downstream: [
+              { name: "search_local", status: "exception", error: String(err?.message ?? err), durationMs }
+            ],
+          },
+        };
+      }
     }
     case "get_availability_v1": {
       const response = await fetchSafe(`${base}/api/availability`, { method: "POST", headers, body: payload }, 5000, 1);
