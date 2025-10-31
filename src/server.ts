@@ -62,6 +62,14 @@ app.use((req, _res, next) => {
   next();
 });
 
+// Entry logging to verify platform routing reaches Node
+app.use((req, _res, next) => {
+  const cid = (req as any).correlationId;
+  const len = req.headers["content-length"];
+  console.info("[entry] cid=%s %s %s len=%s", cid, req.method, req.url, len ?? "-");
+  next();
+});
+
 app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);

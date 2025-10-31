@@ -25,6 +25,11 @@ interface ToolDefinition {
 
 const tools: ToolDefinition[] = [
   {
+    name: "mcp_ping",
+    description: "Simple in-process ping to validate MCP POST path.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
     name: "triage_v1",
     description:
       "Suggest care venue (ER/urgent/primary/virtual) & urgency based on symptoms and age.",
@@ -232,6 +237,21 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
           message: "Missing tool name",
         });
       }
+      // Handle in-process ping without any HTTP calls
+      if (name === "mcp_ping") {
+        return makeResponse(reqBody, {
+          content: [
+            {
+              type: "json",
+              json: {
+                ok: true,
+                now: new Date().toISOString(),
+                role: "node-mcp",
+              },
+            },
+          ],
+        });
+      }
       try {
         const correlationId = randomUUID();
         const result = await callTool(name, args, correlationId);
@@ -335,6 +355,12 @@ export const mcpRouter = Router();
 
 mcpRouter.post("/", async (req, res) => {
   const reqBody = req.body as JsonRpcRequest;
+  const cid = (req as any).correlationId ?? "<none>";
+  try {
+    const bodyType = typeof req.body;
+    const size = req.headers["content-length"] ?? "-";
+    console.info("[mcp] entry cid=%s type=%s size=%s", cid, bodyType, size);
+  } catch {}
   if (!reqBody || reqBody.jsonrpc !== "2.0" || typeof reqBody.method !== "string") {
     return res.status(400).json({
       jsonrpc: "2.0",
