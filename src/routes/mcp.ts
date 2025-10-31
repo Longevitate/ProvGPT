@@ -45,6 +45,15 @@ const tools: ToolDefinition[] = [
     },
   },
   {
+    name: "triage_canary",
+    description: "Dependency-free canary for triage service health.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+  {
     name: "search_facilities_v1",
     description: "Find Providence care options near a location with filters.",
     inputSchema: {
@@ -150,6 +159,10 @@ async function callTool(
   switch (name) {
     case "triage_v1": {
       const response = await fetchSafe(`${base}/api/triage`, { method: "POST", headers, body: payload }, 5000, 1);
+      return response.json();
+    }
+    case "triage_canary": {
+      const response = await fetchSafe(`${base}/api/triage_canary`, { method: "GET", headers }, 3000, 0);
       return response.json();
     }
     case "search_facilities_v1": {
