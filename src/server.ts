@@ -13,6 +13,23 @@ dotenv.config();
 
 export const app = express();
 app.use(cors());
+// Correlation ID middleware
+app.use((req, _res, next) => {
+  const existing = req.headers["x-correlation-id"];
+  (req as any).correlationId = String(existing || randomUUID());
+  next();
+});
+// Entry logging to verify platform routing reaches Node
+app.use((req, _res, next) => {
+  const cid = (req as any).correlationId;
+  const len = req.headers["content-length"];
+  console.info("[entry] cid=%s %s %s len=%s", cid, req.method, req.url, len ?? "-");
+  next();
+});
+
+// Mount MCP early with tolerant body handling to avoid strict JSON parse failures
+app.use("/mcp", express.text({ type: ["application/json", "text/*", "application/*+json", "*/*"], limit: "1mb" }));
+app.use("/mcp", mcpRouter);
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -74,7 +91,19 @@ app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);
 app.use("/api/book", bookRouter);
-app.use("/mcp", mcpRouter);
+// mcp is mounted earlier
+
+// Global error handler for JSON parse errors (structured response)
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err && (err.type === "entity.parse.failed" || err instanceof SyntaxError)) {
+    const cid = req?.correlationId || randomUUID();
+    console.warn("[error] bad_json cid=%s url=%s", cid, req?.url);
+    return res.status(400).json({
+      error: { code: "BAD_JSON", message: "Invalid JSON body", correlationId: cid },
+    });
+  }
+  return next(err);
+});
 
 // Serve static assets if needed (placeholder)
 app.use("/public", express.static(path.join(process.cwd(), "public")));
