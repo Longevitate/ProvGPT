@@ -16,11 +16,13 @@ export const search_facilities_v1 = {
   name: "search_facilities_v1",
   description: "Find Providence care options near a location with filters.",
   parameters: z.object({
-    lat: z.number(),
-    lon: z.number(),
+    lat: z.number().optional(),
+    lon: z.number().optional(),
+    zip: z.string().optional(),
     radiusMiles: z.number().default(15),
     venue: z.enum(["urgent_care","er","primary_care","virtual"]),
     acceptsInsurancePlanId: z.string().optional(),
+    acceptsInsurancePlanName: z.string().optional(),
     openNow: z.boolean().optional(),
     pediatricFriendly: z.boolean().optional()
   })
