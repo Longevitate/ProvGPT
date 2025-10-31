@@ -113,30 +113,59 @@ function componentSource(): string | null {
   return fs.readFileSync(filePath, "utf-8");
 }
 
-async function callTool(name: string, args: Record<string, unknown> | undefined) {
+async function callTool(
+  name: string,
+  args: Record<string, unknown> | undefined,
+  correlationId: string,
+) {
   const base = `http://127.0.0.1:${process.env.PORT || 8080}`;
   const payload = JSON.stringify(args ?? {});
-  const headers = { "content-type": "application/json" };
+  const headers = { "content-type": "application/json", "x-correlation-id": correlationId } as Record<string, string>;
+
+  async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+    return await Promise.race([
+      p,
+      new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout_${ms}ms`)), ms)),
+    ]);
+  }
+
+  async function fetchSafe(url: string, init: any, timeoutMs = 5000, retries = 1): Promise<any> {
+    let lastErr: unknown;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const resp = await withTimeout(fetch(url, init), timeoutMs);
+        return resp;
+      } catch (e) {
+        lastErr = e;
+        // jitter backoff
+        if (attempt < retries) {
+          const delay = 100 + Math.floor(Math.random() * 200);
+          await new Promise((r) => setTimeout(r, delay));
+        }
+      }
+    }
+    throw lastErr;
+  }
 
   switch (name) {
     case "triage_v1": {
-      const response = await fetch(`${base}/api/triage`, { method: "POST", headers, body: payload });
+      const response = await fetchSafe(`${base}/api/triage`, { method: "POST", headers, body: payload }, 5000, 1);
       return response.json();
     }
     case "search_facilities_v1": {
-      const response = await fetch(`${base}/api/search-facilities`, {
+      const response = await fetchSafe(`${base}/api/search-facilities`, {
         method: "POST",
         headers,
         body: payload,
-      });
+      }, 7000, 1);
       return response.json();
     }
     case "get_availability_v1": {
-      const response = await fetch(`${base}/api/availability`, { method: "POST", headers, body: payload });
+      const response = await fetchSafe(`${base}/api/availability`, { method: "POST", headers, body: payload }, 5000, 1);
       return response.json();
     }
     case "book_appointment_v1": {
-      const response = await fetch(`${base}/api/book`, { method: "POST", headers, body: payload });
+      const response = await fetchSafe(`${base}/api/book`, { method: "POST", headers, body: payload }, 5000, 1);
       return response.json();
     }
     default:
@@ -191,7 +220,8 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
         });
       }
       try {
-        const result = await callTool(name, args);
+        const correlationId = randomUUID();
+        const result = await callTool(name, args, correlationId);
         return makeResponse(reqBody, {
           content: [{ type: "json", json: result }],
         });

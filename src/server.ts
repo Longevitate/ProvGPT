@@ -7,10 +7,11 @@ import { searchFacilitiesRouter } from "./routes/searchFacilities.js";
 import { availabilityRouter } from "./routes/availability.js";
 import { bookRouter } from "./routes/book.js";
 import { mcpRouter } from "./routes/mcp.js";
+import { randomUUID } from "crypto";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 app.use(cors());
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
@@ -43,6 +44,24 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
 
+// Canary route: dependency-free health of app instance
+app.get("/api/triage_canary", (_req, res) => {
+  res.setHeader("content-type", "application/json");
+  return res.status(200).json({
+    ok: true,
+    version: process.env.BUILD_SHA || "dev",
+    time: new Date().toISOString(),
+  });
+});
+
+// Correlation ID middleware
+app.use((req, _res, next) => {
+  // propagate or assign a correlation id early
+  const existing = req.headers["x-correlation-id"];
+  (req as any).correlationId = String(existing || randomUUID());
+  next();
+});
+
 app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);
@@ -53,8 +72,10 @@ app.use("/mcp", mcpRouter);
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 
 const PORT = Number(process.env.PORT || 8080);
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server listening on http://0.0.0.0:${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server listening on http://0.0.0.0:${PORT}`);
+  });
+}
 
 
