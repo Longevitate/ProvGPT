@@ -1,0 +1,13 @@
+{
+  "name": "minimal-mcp-server",
+  "version": "1.0.0",
+  "main": "minimal-mcp-server.js",
+  "scripts": {
+    "start": "node minimal-mcp-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5"
+  }
+}
+
