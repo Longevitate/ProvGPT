@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { randomUUID } from "crypto";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
@@ -104,6 +105,9 @@ function computeResults(
 }
 
 searchFacilitiesRouter.post("/", (req, res) => {
+        const correlationId = String((req as any).correlationId || req.headers["x-correlation-id"] || randomUUID());
+        const start = Date.now();
+        console.info("[search] start cid=%s", correlationId);
         const body = coerceJsonBody(req.body);
         const parsed = bodySchema.safeParse(body);
 	if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
@@ -119,7 +123,8 @@ searchFacilitiesRouter.post("/", (req, res) => {
 		}
 	}
 	if (effectiveLat == null || effectiveLon == null) {
-		return res.status(400).json({ error: "location_required", message: "Provide lat/lon or a known zip." });
+		console.warn("[search] bad_request cid=%s location_required", correlationId);
+		return res.status(400).json({ error: "location_required", message: "Provide lat/lon or a known zip.", correlationId });
 	}
 
 	const facilities = loadFacilities().filter((f) => f.venue === venue);
@@ -161,7 +166,9 @@ searchFacilitiesRouter.post("/", (req, res) => {
 		});
 	}
 
-	return res.json(results);
+	const durationMs = Date.now() - start;
+	console.info("[search] success cid=%s durationMs=%d count=%d", correlationId, durationMs, results.length);
+	return res.json({ correlationId, results, durationMs });
 });
 
 
