@@ -365,3 +365,20 @@ mcpRouter.post("/", async (req, res) => {
   }
 });
 
+// GET handler for MCP discovery (ChatGPT does this first!)
+mcpRouter.get("/", (_req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.json({
+    jsonrpc: "2.0",
+    serverInfo: {
+      name: "providence_ai_booking",
+      version: "0.1.0",
+    },
+    protocolVersion: "2024-11-05",
+    capabilities: {
+      tools: { list: {}, call: {} },
+      resources: { list: {}, read: {} },
+    },
+  });
+});
+
