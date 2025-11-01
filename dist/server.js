@@ -56,6 +56,23 @@ app.use((_req, res, next) => {
 app.get("/health", (_req, res) => {
     res.json({ ok: true });
 });
+// Root path - return basic server info
+app.get("/", (_req, res) => {
+    res.json({
+        name: "providence_ai_booking",
+        version: "0.1.0",
+        status: "online",
+        endpoints: {
+            mcp: "/mcp",
+            health: "/health"
+        }
+    });
+});
+// Handle robots.txt requests (ChatGPT checks for this)
+app.get("/robots*.txt", (_req, res) => {
+    res.type("text/plain");
+    res.send("User-agent: *\nAllow: /");
+});
 app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);
