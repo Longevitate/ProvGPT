@@ -84,8 +84,8 @@ function computeResults(lat, lon, facilities, radiusMiles, filters) {
         .sort((a, b) => (a.openNow === b.openNow ? a.distance - b.distance : a.openNow ? -1 : 1));
 }
 searchFacilitiesRouter.post("/", (req, res) => {
-        const body = coerceJsonBody(req.body);
-        const parsed = bodySchema.safeParse(body);
+    const body = coerceJsonBody(req.body);
+    const parsed = bodySchema.safeParse(body);
     if (!parsed.success)
         return res.status(400).json({ error: parsed.error.flatten() });
     const { lat, lon, radiusMiles, venue, acceptsInsurancePlanId, acceptsInsurancePlanName, openNow, pediatricFriendly, zip } = parsed.data;

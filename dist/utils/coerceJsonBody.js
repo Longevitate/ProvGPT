@@ -7,7 +7,7 @@ export function coerceJsonBody(raw) {
         try {
             return JSON.parse(trimmed);
         }
-        catch (_a) {
+        catch {
             return raw;
         }
     }

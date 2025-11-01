@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "search_facilities_v1",
+    "arguments": {
+      "venue": "urgent_care"
+    }
+  }
+}
+

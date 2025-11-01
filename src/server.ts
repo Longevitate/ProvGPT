@@ -49,6 +49,13 @@ app.use("/api/availability", availabilityRouter);
 app.use("/api/book", bookRouter);
 app.use("/mcp", mcpRouter);
 
+// ROOT-LEVEL REST ENDPOINTS for ChatGPT Apps SDK
+// ChatGPT expects these exact paths as REST endpoints
+app.use("/triage_v1", triageRouter);
+app.use("/search_facilities_v1", searchFacilitiesRouter);
+app.use("/get_availability_v1", availabilityRouter);
+app.use("/book_appointment_v1", bookRouter);
+
 // Serve static assets if needed (placeholder)
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 
