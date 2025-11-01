@@ -9,6 +9,10 @@ import { bookRouter } from "./routes/book.js";
 import { mcpRouter } from "./routes/mcp.js";
 dotenv.config();
 const app = express();
+// Disable compression - send raw JSON with explicit Content-Length
+app.set('json spaces', 0);
+app.set('x-powered-by', false);
+app.disable('etag');
 app.use(cors());
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
@@ -31,6 +35,22 @@ app.use((req, _res, next) => {
             }
         }
     }
+    next();
+});
+// Middleware to ensure explicit JSON response headers
+app.use((_req, res, next) => {
+    const originalJson = res.json.bind(res);
+    res.json = function (body) {
+        // Convert to JSON string manually to control format
+        const jsonString = JSON.stringify(body);
+        const buffer = Buffer.from(jsonString, 'utf8');
+        // Set explicit headers
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Content-Length', buffer.length.toString());
+        res.removeHeader('Transfer-Encoding');
+        // Send the buffer directly
+        return res.send(buffer);
+    };
     next();
 });
 app.get("/health", (_req, res) => {
