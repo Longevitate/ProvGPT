@@ -1,0 +1,7 @@
+<step title="Incoming Request" date="2025-10-31T21:20:14.060" instance="eb29e0" url="/api/deployments/0478a9523ef0dd502110b6aed9c1c018a93b0af11761945613609" method="PUT" type="request" pid="768,1,34" Host="provgpt.scm.azurewebsites.net" User-Agent="GITHUBACTIONS_DeployWebAppToAzure_155172e240e40417d4d316a9a2acc18710c83a09faef8fc369261a8da88ec1a0" Authorization="Bea..." Content-Type="application/json; charset=utf-8" Content-Length="312" X-ARR-LOG-ID="da1b192d-d43d-4583-86a0-8d3db669a30e" CLIENT-IP="20.55.213.192:37824" X-SITE-DEPLOYMENT-ID="ProvGPT" WAS-DEFAULT-HOSTNAME="provgpt.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/0478a9523ef0dd502110b6aed9c1c018a93b0af11761945613609" X-Client-IP="20.55.213.192" X-Client-Port="37824" >
+  <step title="Cleanup Xml Logs" date="2025-10-31T21:20:14.063" /><!-- duration: 6ms -->
+  <step title="DeploymentService.Deploy(id)" date="2025-10-31T21:20:14.083" >
+    <step title="DeploymentService.Create(id)" date="2025-10-31T21:20:14.086" /><!-- duration: 1198ms -->
+  </step><!-- duration: 1206ms -->
+  <step title="Outgoing response" date="2025-10-31T21:20:15.292" type="response" statusCode="200" statusText="OK" /><!-- duration: 5ms -->
+</step><!-- duration: 1240ms -->

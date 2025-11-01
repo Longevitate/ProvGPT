@@ -1,0 +1,88 @@
+2025-10-31T21:06:02.337387680Z Server listening on http://0.0.0.0:8080 (local dev mode)
+2025-10-31T21:06:02.341513149Z node:events:502
+2025-10-31T21:06:02.341607072Z       throw er; // Unhandled 'error' event
+2025-10-31T21:06:02.341612104Z       ^
+2025-10-31T21:06:02.341614484Z 
+2025-10-31T21:06:02.341616426Z Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+2025-10-31T21:06:02.341618908Z     at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+2025-10-31T21:06:02.341621349Z     at listenInCluster (node:net:1965:12)
+2025-10-31T21:06:02.341624070Z     at doListen (node:net:2139:7)
+2025-10-31T21:06:02.341626788Z     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2025-10-31T21:06:02.341629349Z Emitted 'error' event on Server instance at:
+2025-10-31T21:06:02.341631694Z     at emitErrorNT (node:net:1944:8)
+2025-10-31T21:06:02.341633985Z     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+2025-10-31T21:06:02.341636311Z   code: 'EADDRINUSE',
+2025-10-31T21:06:02.341646608Z   errno: -98,
+2025-10-31T21:06:02.341650147Z   syscall: 'listen',
+2025-10-31T21:06:02.341652041Z   address: '0.0.0.0',
+2025-10-31T21:06:02.341653382Z   port: 8080
+2025-10-31T21:06:02.341654742Z }
+2025-10-31T21:06:02.341656065Z 
+2025-10-31T21:06:02.341657463Z Node.js v20.19.5
+
+2025-10-31T21:06:39.833625658Z Server listening on http://0.0.0.0:8080 (local dev mode)
+2025-10-31T21:06:39.833695697Z node:events:502
+2025-10-31T21:06:39.833702011Z       throw er; // Unhandled 'error' event
+2025-10-31T21:06:39.833703664Z       ^
+2025-10-31T21:06:39.833705015Z 
+2025-10-31T21:06:39.833706396Z Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+2025-10-31T21:06:39.833708627Z     at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+2025-10-31T21:06:39.833710979Z     at listenInCluster (node:net:1965:12)
+2025-10-31T21:06:39.833713081Z     at doListen (node:net:2139:7)
+2025-10-31T21:06:39.833715304Z     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2025-10-31T21:06:39.833717588Z Emitted 'error' event on Server instance at:
+2025-10-31T21:06:39.833719856Z     at emitErrorNT (node:net:1944:8)
+2025-10-31T21:06:39.833721972Z     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+2025-10-31T21:06:39.833724366Z   code: 'EADDRINUSE',
+2025-10-31T21:06:39.833726524Z   errno: -98,
+2025-10-31T21:06:39.833728668Z   syscall: 'listen',
+2025-10-31T21:06:39.833730908Z   address: '0.0.0.0',
+2025-10-31T21:06:39.833733094Z   port: 8080
+2025-10-31T21:06:39.833735196Z }
+2025-10-31T21:06:39.833737398Z 
+2025-10-31T21:06:39.833739494Z Node.js v20.19.5
+
+2025-10-31T21:08:22.872364576Z Server listening on http://0.0.0.0:8080 (local dev mode)
+2025-10-31T21:08:22.910341846Z node:events:502
+2025-10-31T21:08:22.910369931Z       throw er; // Unhandled 'error' event
+2025-10-31T21:08:22.910372811Z       ^
+2025-10-31T21:08:22.910375148Z 
+2025-10-31T21:08:22.910377452Z Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+2025-10-31T21:08:22.910380050Z     at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+2025-10-31T21:08:22.910382459Z     at listenInCluster (node:net:1965:12)
+2025-10-31T21:08:22.910384811Z     at doListen (node:net:2139:7)
+2025-10-31T21:08:22.910387274Z     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2025-10-31T21:08:22.910389725Z Emitted 'error' event on Server instance at:
+2025-10-31T21:08:22.910392054Z     at emitErrorNT (node:net:1944:8)
+2025-10-31T21:08:22.910394264Z     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+2025-10-31T21:08:22.910396846Z   code: 'EADDRINUSE',
+2025-10-31T21:08:22.910399078Z   errno: -98,
+2025-10-31T21:08:22.910401300Z   syscall: 'listen',
+2025-10-31T21:08:22.910403564Z   address: '0.0.0.0',
+2025-10-31T21:08:22.910406055Z   port: 8080
+2025-10-31T21:08:22.910408065Z }
+2025-10-31T21:08:22.910410255Z 
+2025-10-31T21:08:22.910412819Z Node.js v20.19.5
+
+2025-10-31T21:15:38.701739023Z Server listening on http://0.0.0.0:8080 (local dev mode)
+2025-10-31T21:15:38.705810019Z node:events:502
+2025-10-31T21:15:38.705861007Z       throw er; // Unhandled 'error' event
+2025-10-31T21:15:38.705865295Z       ^
+2025-10-31T21:15:38.705867724Z 
+2025-10-31T21:15:38.705869880Z Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+2025-10-31T21:15:38.705872654Z     at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+2025-10-31T21:15:38.705874999Z     at listenInCluster (node:net:1965:12)
+2025-10-31T21:15:38.705877085Z     at doListen (node:net:2139:7)
+2025-10-31T21:15:38.705879480Z     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2025-10-31T21:15:38.705881742Z Emitted 'error' event on Server instance at:
+2025-10-31T21:15:38.705883787Z     at emitErrorNT (node:net:1944:8)
+2025-10-31T21:15:38.705894787Z     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+2025-10-31T21:15:38.705896506Z   code: 'EADDRINUSE',
+2025-10-31T21:15:38.705897934Z   errno: -98,
+2025-10-31T21:15:38.705899280Z   syscall: 'listen',
+2025-10-31T21:15:38.705900686Z   address: '0.0.0.0',
+2025-10-31T21:15:38.705902020Z   port: 8080
+2025-10-31T21:15:38.705903433Z }
+2025-10-31T21:15:38.705904753Z 
+2025-10-31T21:15:38.705906037Z Node.js v20.19.5
+

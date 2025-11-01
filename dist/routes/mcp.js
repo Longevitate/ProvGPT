@@ -79,7 +79,7 @@ const COMPONENT_RESOURCE = {
     name: "find-care-component",
     mimeType: "text/tsx",
 };
-const sseClients = new Map();
+// SSE removed - using static JSON responses only
 function componentSource() {
     const filePath = path.join(process.cwd(), "apps", "find-care", "component.tsx");
     if (!fs.existsSync(filePath)) {
@@ -193,7 +193,7 @@ async function handleJsonRpc(reqBody) {
     switch (reqBody.method) {
         case "initialize": {
             return makeResponse(reqBody, {
-                serverInfo: { name: "Providence Find Care Demo", version: "0.1.0" },
+                serverInfo: { name: "providence_ai_booking", version: "0.1.0" },
                 protocolVersion: "2024-11-05",
                 capabilities: {
                     tools: { list: {}, call: {} },
@@ -207,7 +207,6 @@ async function handleJsonRpc(reqBody) {
                     name: tool.name,
                     description: tool.description,
                     inputSchema: tool.inputSchema,
-                    input_schema: tool.inputSchema,
                 })),
             });
         }
@@ -240,7 +239,6 @@ async function handleJsonRpc(reqBody) {
                         uri: COMPONENT_RESOURCE.uri,
                         name: COMPONENT_RESOURCE.name,
                         mimeType: COMPONENT_RESOURCE.mimeType,
-                        mime_type: COMPONENT_RESOURCE.mimeType,
                     },
                 ],
             });
@@ -285,37 +283,13 @@ async function handleJsonRpc(reqBody) {
             });
     }
 }
-function broadcastToSseClients(response) {
-    const payload = JSON.stringify(response);
-    for (const [clientId, res] of sseClients) {
-        try {
-            res.write(`event: message\n`);
-            res.write(`data: ${payload}\n\n`);
-        }
-        catch (err) {
-            console.error(`[MCP] SSE write failed for client ${clientId}:`, err);
-            sseClients.delete(clientId);
-            try {
-                res.end();
-            }
-            catch {
-                // ignore
-            }
-        }
-    }
-}
-function createSseConnection(res) {
-    const clientId = randomUUID();
-    sseClients.set(clientId, res);
-    res.write(`event: message\n`);
-    res.write(`data: ${JSON.stringify({
-        jsonrpc: "2.0",
-        method: "ready",
-        params: { clientId },
-    })}\n\n`);
-    return clientId;
-}
+// SSE functions removed
 export const mcpRouter = Router();
+// OPTIONS handler for CORS preflight
+mcpRouter.options("/", (_req, res) => {
+    res.status(204).end();
+});
+// POST handler - static JSON response (no streaming)
 mcpRouter.post("/", async (req, res) => {
     const reqBody = req.body;
     if (!reqBody || reqBody.jsonrpc !== "2.0" || typeof reqBody.method !== "string") {
@@ -327,11 +301,13 @@ mcpRouter.post("/", async (req, res) => {
     }
     try {
         const rpcResponse = await handleJsonRpc(reqBody);
-        broadcastToSseClients(rpcResponse);
+        // Ensure proper Content-Type and no BOM
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         return res.json(rpcResponse);
     }
     catch (err) {
         console.error(`[MCP] Error handling method ${reqBody.method}:`, err);
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         return res.status(500).json({
             jsonrpc: "2.0",
             id: reqBody.id ?? null,
@@ -341,20 +317,4 @@ mcpRouter.post("/", async (req, res) => {
             },
         });
     }
-});
-mcpRouter.get("/", (req, res) => {
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.flushHeaders?.();
-    const clientId = createSseConnection(res);
-    console.log(`[MCP] SSE client connected: ${clientId}`);
-    const keepAlive = setInterval(() => {
-        res.write(`: keep-alive\n\n`);
-    }, 15000);
-    req.on("close", () => {
-        clearInterval(keepAlive);
-        sseClients.delete(clientId);
-        console.log(`[MCP] SSE client disconnected: ${clientId}`);
-    });
 });

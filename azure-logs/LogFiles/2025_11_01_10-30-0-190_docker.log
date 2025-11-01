@@ -1,0 +1,64 @@
+2025-11-01T00:13:19.5731040Z Container start method called.
+2025-11-01T00:13:19.5833143Z Establishing network.
+2025-11-01T00:13:19.5837112Z Pulling image: ghcr.io/longevitate/provgpt:latest.
+2025-11-01T00:13:26.2576840Z Image ghcr.io/longevitate/provgpt:latest is pulled from registry ghcr.io
+2025-11-01T00:13:26.3636710Z Container is starting.
+2025-11-01T00:13:26.4016737Z Establishing user namespace if not established already.
+2025-11-01T00:13:26.4038069Z Establishing network if not established already.
+2025-11-01T00:13:26.4040828Z Mounting volumes.
+2025-11-01T00:13:26.4203556Z Nested mountpoint volatile/logs
+2025-11-01T00:13:26.4451180Z Nested mountpoint 
+2025-11-01T00:13:26.6511114Z Creating container.
+2025-11-01T00:13:26.6518707Z Creating pipes for streaming container io.
+2025-11-01T00:13:26.6529968Z Creating stdout named pipe at /podr/container/pipe/86173dd3f264_provgpt/stdout_bd473549cbc0419fb88b442e3dba4d79.
+2025-11-01T00:13:26.6535702Z Successfully created stdout named pipe at: /podr/container/pipe/86173dd3f264_provgpt/stdout_bd473549cbc0419fb88b442e3dba4d79.
+2025-11-01T00:13:26.6550234Z Opening named pipe /podr/container/pipe/86173dd3f264_provgpt/stdout_bd473549cbc0419fb88b442e3dba4d79 for reading in non-blocking mode.
+2025-11-01T00:13:26.6553946Z Successfully opened named pipe: /podr/container/pipe/86173dd3f264_provgpt/stdout_bd473549cbc0419fb88b442e3dba4d79.
+2025-11-01T00:13:26.6561693Z Successfully removed non-blocking flag from /podr/container/pipe/86173dd3f264_provgpt/stdout_bd473549cbc0419fb88b442e3dba4d79.
+2025-11-01T00:13:26.6565900Z Creating stderr named pipe at /podr/container/pipe/86173dd3f264_provgpt/stderr_677e82374ed84f78a95cfe41f1ccb075.
+2025-11-01T00:13:26.6571676Z Successfully created stderr named pipe at: /podr/container/pipe/86173dd3f264_provgpt/stderr_677e82374ed84f78a95cfe41f1ccb075.
+2025-11-01T00:13:26.6578556Z Opening named pipe /podr/container/pipe/86173dd3f264_provgpt/stderr_677e82374ed84f78a95cfe41f1ccb075 for reading in non-blocking mode.
+2025-11-01T00:13:26.6580704Z Successfully opened named pipe: /podr/container/pipe/86173dd3f264_provgpt/stderr_677e82374ed84f78a95cfe41f1ccb075.
+2025-11-01T00:13:26.6588000Z Successfully removed non-blocking flag from /podr/container/pipe/86173dd3f264_provgpt/stderr_677e82374ed84f78a95cfe41f1ccb075.
+2025-11-01T00:13:26.6925005Z Creating container with image: ghcr.io/longevitate/provgpt:latest from registry: ghcr.io and fully qualified image name: ghcr.io/longevitate/provgpt:latest
+2025-11-01T00:13:28.4211599Z Starting container: 86173dd3f264_provgpt.
+2025-11-01T00:13:28.6547720Z Starting watchers and probes.
+2025-11-01T00:13:28.7235660Z Starting metrics collection.
+2025-11-01T00:13:28.7393432Z Container is running.
+2025-11-01T00:13:29.6471777Z Container start method finished after 10068 ms.
+2025-11-01T00:13:30.7034153Z Site startup probe succeeded after 1.0300166 seconds.
+2025-11-01T00:13:30.9137428Z Site is running with deployment version: e2b37ab6e86e9c6ee0b8bf7bb7d282b77de016bf1761955363746
+2025-11-01T00:13:30.9143408Z Site started.
+2025-11-01T00:28:21.1804023Z Container start method called.
+2025-11-01T00:28:21.1813463Z Establishing network.
+2025-11-01T00:28:21.1815164Z Pulling image: ghcr.io/longevitate/provgpt:latest.
+2025-11-01T00:28:22.9488938Z Container is starting.
+2025-11-01T00:28:22.9521102Z Establishing user namespace if not established already.
+2025-11-01T00:28:22.9522459Z Establishing network if not established already.
+2025-11-01T00:28:22.9534888Z Mounting volumes.
+2025-11-01T00:28:22.9541658Z Nested mountpoint volatile/logs
+2025-11-01T00:28:22.9613569Z Nested mountpoint 
+2025-11-01T00:28:23.0028373Z Creating container.
+2025-11-01T00:28:23.0029979Z Creating pipes for streaming container io.
+2025-11-01T00:28:23.0031238Z Creating stdout named pipe at /podr/container/pipe/2e5c86e0f57e_provgpt/stdout_ee926fce3e9c44a3b712ab20167d8dbd.
+2025-11-01T00:28:23.0034716Z Successfully created stdout named pipe at: /podr/container/pipe/2e5c86e0f57e_provgpt/stdout_ee926fce3e9c44a3b712ab20167d8dbd.
+2025-11-01T00:28:23.0036115Z Opening named pipe /podr/container/pipe/2e5c86e0f57e_provgpt/stdout_ee926fce3e9c44a3b712ab20167d8dbd for reading in non-blocking mode.
+2025-11-01T00:28:23.0037344Z Successfully opened named pipe: /podr/container/pipe/2e5c86e0f57e_provgpt/stdout_ee926fce3e9c44a3b712ab20167d8dbd.
+2025-11-01T00:28:23.0053014Z Successfully removed non-blocking flag from /podr/container/pipe/2e5c86e0f57e_provgpt/stdout_ee926fce3e9c44a3b712ab20167d8dbd.
+2025-11-01T00:28:23.0063665Z Creating stderr named pipe at /podr/container/pipe/2e5c86e0f57e_provgpt/stderr_b18b938fd5d741a098211b3a04ada786.
+2025-11-01T00:28:23.0083483Z Successfully created stderr named pipe at: /podr/container/pipe/2e5c86e0f57e_provgpt/stderr_b18b938fd5d741a098211b3a04ada786.
+2025-11-01T00:28:23.0087554Z Opening named pipe /podr/container/pipe/2e5c86e0f57e_provgpt/stderr_b18b938fd5d741a098211b3a04ada786 for reading in non-blocking mode.
+2025-11-01T00:28:23.0107675Z Successfully opened named pipe: /podr/container/pipe/2e5c86e0f57e_provgpt/stderr_b18b938fd5d741a098211b3a04ada786.
+2025-11-01T00:28:23.0108902Z Successfully removed non-blocking flag from /podr/container/pipe/2e5c86e0f57e_provgpt/stderr_b18b938fd5d741a098211b3a04ada786.
+2025-11-01T00:28:23.0109991Z Creating container with image: ghcr.io/longevitate/provgpt:latest from registry: ghcr.io and fully qualified image name: ghcr.io/longevitate/provgpt:latest
+2025-11-01T00:28:25.7573876Z Starting container: 2e5c86e0f57e_provgpt.
+2025-11-01T00:28:25.7829555Z Starting watchers and probes.
+2025-11-01T00:28:25.7837656Z Starting metrics collection.
+2025-11-01T00:28:25.7839314Z Container is running.
+2025-11-01T00:28:25.8791950Z Container start method finished after 4698 ms.
+2025-11-01T00:28:26.9366112Z Site startup probe succeeded after 1.0521148 seconds.
+2025-11-01T00:28:27.9153439Z Site is running with deployment version: e2b37ab6e86e9c6ee0b8bf7bb7d282b77de016bf1761955363746
+2025-11-01T00:28:27.9156689Z Site started.
+2025-11-01T00:28:48.0605078Z Container is terminating. Grace period: 5 seconds.
+2025-11-01T00:28:48.1982680Z Stop and delete container. Retry count = 0
+2025-11-01T00:28:48.2002445Z Stopping container: 86173dd3f264_provgpt.

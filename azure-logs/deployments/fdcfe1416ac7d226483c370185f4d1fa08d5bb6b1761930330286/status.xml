@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<deployment>
+  <id>fdcfe1416ac7d226483c370185f4d1fa08d5bb6b1761930330286</id>
+  <author>Longevitate</author>
+  <deployer>GitHub</deployer>
+  <authorEmail />
+  <message>{"type":"Deployment","sha":"fdcfe1416ac7d226483c370185f4d1fa08d5bb6b","repoName":"Longevitate/ProvGPT","actor":"Longevitate","slotName":"production"}</message>
+  <progress />
+  <status>Success</status>
+  <statusText />
+  <lastSuccessEndTime>2025-10-31T17:05:34.8586895Z</lastSuccessEndTime>
+  <receivedTime>2025-10-31T17:05:34.8586895Z</receivedTime>
+  <startTime>2025-10-31T17:05:34.8586895Z</startTime>
+  <endTime>2025-10-31T17:05:34.8586895Z</endTime>
+  <complete>True</complete>
+  <is_temp>False</is_temp>
+  <is_readonly>True</is_readonly>
+  <buildSummary />
+</deployment>
