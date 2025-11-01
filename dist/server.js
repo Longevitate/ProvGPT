@@ -9,10 +9,21 @@ import { bookRouter } from "./routes/book.js";
 import { mcpRouter } from "./routes/mcp.js";
 dotenv.config();
 const app = express();
-// Disable compression - send raw JSON with explicit Content-Length
+// CRITICAL: Force stateless HTTP (OpenAI requirement for MCP)
+// See: https://community.openai.com/t/mcp-server-passes-all-json-rpc-tests-but-agent-builder-fails-with-424-failed-dependency/1363529/2
+app.set('trust proxy', false);
 app.set('json spaces', 0);
 app.set('x-powered-by', false);
 app.disable('etag');
+app.disable('view cache');
+// Force stateless connections - disable keep-alive
+app.use((_req, res, next) => {
+    res.setHeader('Connection', 'close');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
 app.use(cors());
 // Prefer native JSON and urlencoded parsing first for standard clients
 app.use(express.json());
@@ -87,6 +98,11 @@ app.use("/book_appointment_v1", bookRouter);
 // Serve static assets if needed (placeholder)
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 const PORT = Number(process.env.PORT || 8080);
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server listening on http://0.0.0.0:${PORT}`);
+// Create server with keep-alive disabled for stateless MCP
+const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server listening on http://0.0.0.0:${PORT} (stateless mode)`);
 });
+// Disable keep-alive at server level
+server.keepAliveTimeout = 0;
+server.headersTimeout = 0;
+export { app, server };
