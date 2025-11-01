@@ -257,11 +257,15 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
   switch (reqBody.method) {
     case "initialize": {
       return makeResponse(reqBody, {
-        serverInfo: { name: "providence_ai_booking", version: "0.1.0" },
-        protocolVersion: "2024-11-05",
+        protocolVersion: "2025-03-26",
         capabilities: {
-          tools: { list: {}, call: {} },
-          resources: { list: {}, read: {} },
+          tools: {
+            listChanged: false,
+          },
+        },
+        serverInfo: {
+          name: "providence_ai_booking",
+          version: "0.1.0",
         },
       });
     }
@@ -394,14 +398,15 @@ mcpRouter.get("/", (_req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.json({
     jsonrpc: "2.0",
+    protocolVersion: "2025-03-26",
+    capabilities: {
+      tools: {
+        listChanged: false,
+      },
+    },
     serverInfo: {
       name: "providence_ai_booking",
       version: "0.1.0",
-    },
-    protocolVersion: "2024-11-05",
-    capabilities: {
-      tools: { list: {}, call: {} },
-      resources: { list: {}, read: {} },
     },
   });
 });
