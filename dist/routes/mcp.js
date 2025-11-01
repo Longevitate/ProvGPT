@@ -4,6 +4,20 @@ import path from "path";
 import { randomUUID } from "crypto";
 const tools = [
     {
+        name: "ping_v1",
+        description: "Simple ping test to verify server connectivity and response handling.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                message: {
+                    type: "string",
+                    description: "Optional message to echo back"
+                },
+            },
+            additionalProperties: false,
+        },
+    },
+    {
         name: "triage_v1",
         description: "Suggest care venue (ER/urgent/primary/virtual) & urgency based on symptoms and age.",
         inputSchema: {
@@ -91,6 +105,16 @@ async function callTool(name, args) {
     // Use in-process implementations to avoid HTTP fetch issues in Azure
     const payload = args ?? {};
     switch (name) {
+        case "ping_v1": {
+            // Simple ping response
+            const { message } = payload;
+            return {
+                ok: true,
+                timestamp: new Date().toISOString(),
+                message: message || "pong",
+                server: "providence_ai_booking",
+            };
+        }
         case "triage_v1": {
             // Simple in-process triage logic
             const { symptoms, age } = payload;

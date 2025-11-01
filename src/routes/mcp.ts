@@ -25,6 +25,20 @@ interface ToolDefinition {
 
 const tools: ToolDefinition[] = [
   {
+    name: "ping_v1",
+    description: "Simple ping test to verify server connectivity and response handling.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        message: { 
+          type: "string",
+          description: "Optional message to echo back"
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "triage_v1",
     description:
       "Suggest care venue (ER/urgent/primary/virtual) & urgency based on symptoms and age.",
@@ -118,6 +132,16 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
   const payload = args ?? {};
 
   switch (name) {
+    case "ping_v1": {
+      // Simple ping response
+      const { message } = payload as { message?: string };
+      return {
+        ok: true,
+        timestamp: new Date().toISOString(),
+        message: message || "pong",
+        server: "providence_ai_booking",
+      };
+    }
     case "triage_v1": {
       // Simple in-process triage logic
       const { symptoms, age } = payload as { symptoms?: string; age?: number };
