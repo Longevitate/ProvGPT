@@ -249,7 +249,12 @@ async function handleJsonRpc(reqBody) {
             try {
                 const result = await callTool(name, args);
                 return makeResponse(reqBody, {
-                    content: [{ type: "json", json: result }],
+                    content: [
+                        {
+                            type: "text",
+                            text: JSON.stringify(result)
+                        }
+                    ],
                 });
             }
             catch (err) {

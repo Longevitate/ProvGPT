@@ -292,7 +292,12 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       try {
         const result = await callTool(name, args);
         return makeResponse(reqBody, {
-          content: [{ type: "json", json: result }],
+          content: [
+            { 
+              type: "text", 
+              text: JSON.stringify(result)
+            }
+          ],
         });
       } catch (err) {
         console.error(`[MCP] tools/call failed for ${name}:`, err);
