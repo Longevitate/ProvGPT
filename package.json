@@ -8,29 +8,30 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "test": "vitest run",
+    "test:e2e": "playwright test --reporter=line",
+    "test:e2e:ui": "playwright test --ui",
     "fetch:locations": "node ./scripts/fetchKyruusLocations.js"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
     "@modelcontextprotocol/sdk": "^1.20.2",
-    "zod": "^3.23.8",
-    "date-fns": "^3.6.0",
-    "date-fns-tz": "^3.0.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.30",
-    "typescript": "^5.6.3"
+    "cors": "^2.8.5",
+    "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "typescript": "^5.6.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.2",
     "vitest": "^2.1.3"
   }
 }
-
-

@@ -39,6 +39,12 @@
     <div id="test4-result" class="result">Click to test...</div>
   </div>
 
+  <div class="test-section">
+    <h3>Test 5: MCP Integration Test</h3>
+    <button onclick="testMCPIntegration()">Test MCP find_care_v1</button>
+    <div id="test5-result" class="result">Click to test...</div>
+  </div>
+
   <script>
     // Simulate the component logic
     const ALLOWED_UI_URIS = new Set([
@@ -62,7 +68,8 @@
       return `📝 Traditional Render: ${props.results ? props.results.length + ' facilities' : 'No results'}`;
     }
 
-    function testValidUI() {
+    window.testValidUI = function() {
+      console.log('testValidUI called');
       const props = {
         ui: "ui://find-care/widget.html",
         uiProps: {
@@ -74,19 +81,36 @@
         },
         fallback_markdown: "### Test Facilities\n- Test Facility 1 (5.2 mi) — Open\n- Test Facility 2 (8.1 mi) — Closed"
       };
-      document.getElementById('test1-result').textContent = detectAndRender(props);
-    }
+      const result = detectAndRender(props);
+      console.log('testValidUI result:', result);
+      const element = document.getElementById('test1-result');
+      if (element) {
+        element.textContent = result;
+        element.style.backgroundColor = '#e0f0e0'; // Make it visible that it changed
+        console.log('Updated element:', element.textContent);
+      } else {
+        console.error('Element test1-result not found');
+      }
+    };
 
-    function testInvalidUI() {
+    window.testInvalidUI = function() {
+      console.log('testInvalidUI called');
       const props = {
         ui: "ui://evil/widget.html",
         uiProps: { results: [] },
         fallback_markdown: "Fallback content"
       };
-      document.getElementById('test2-result').textContent = detectAndRender(props);
-    }
+      const result = detectAndRender(props);
+      console.log('testInvalidUI result:', result);
+      const element = document.getElementById('test2-result');
+      if (element) {
+        element.textContent = result;
+        element.style.backgroundColor = '#ffe0e0';
+      }
+    };
 
-    function testNoUI() {
+    window.testNoUI = function() {
+      console.log('testNoUI called');
       const props = {
         results: [
           { id: "test1", name: "Test Facility 1", distance: 5.2, openNow: true }
@@ -94,8 +118,14 @@
         query: "98201",
         venue: "urgent_care"
       };
-      document.getElementById('test3-result').textContent = detectAndRender(props);
-    }
+      const result = detectAndRender(props);
+      console.log('testNoUI result:', result);
+      const element = document.getElementById('test3-result');
+      if (element) {
+        element.textContent = result;
+        element.style.backgroundColor = '#e0e0ff';
+      }
+    };
 
     function testWidgetRender() {
       const iframeSrc = `/public/find-care-test.html?props=${encodeURIComponent(JSON.stringify({
@@ -111,6 +141,62 @@
         <br><br>
         <iframe src="${iframeSrc}" style="width:100%; height:200px; border:1px solid #ccc;" title="Test Widget"></iframe>
       `;
+    }
+  }
+
+  window.testMCPIntegration = async function() {
+    console.log('testMCPIntegration called');
+    const resultEl = document.getElementById('test5-result');
+    resultEl.textContent = 'Testing MCP endpoint...';
+    resultEl.style.backgroundColor = '#fff3cd';
+
+    try {
+      const response = await fetch('/mcp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'tools/call',
+          params: {
+            name: 'find_care_v1',
+            arguments: { zip: '98201', venue: 'urgent_care' }
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('MCP response data:', data);
+
+      if (data.result && data.result.content && data.result.content[0]) {
+        const content = data.result.content[0];
+        if (content.type === 'text') {
+          const uiData = JSON.parse(content.text);
+
+          resultEl.innerHTML = `
+            <div style="color: green;">✅ MCP Response Valid</div>
+            <div><strong>UI:</strong> ${uiData.ui}</div>
+            <div><strong>Results:</strong> ${uiData.props?.results?.length || 0} facilities</div>
+            <div><strong>Query:</strong> ${JSON.stringify(uiData.props?.query)}</div>
+            <div><strong>Has Fallback:</strong> ${!!uiData.fallback_markdown}</div>
+          `;
+          resultEl.style.backgroundColor = '#d4edda';
+        } else {
+          resultEl.innerHTML = `<div style="color: red;">❌ Unexpected content type: ${content.type}</div>`;
+          resultEl.style.backgroundColor = '#f8d7da';
+        }
+      } else {
+        resultEl.innerHTML = `<div style="color: red;">❌ Invalid response structure</div>`;
+        resultEl.style.backgroundColor = '#f8d7da';
+      }
+    } catch (error) {
+      console.error('MCP test error:', error);
+      resultEl.innerHTML = `<div style="color: red;">❌ Error: ${error.message}</div>`;
+      resultEl.style.backgroundColor = '#f8d7da';
     }
   </script>
 </body>

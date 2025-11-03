@@ -80,14 +80,17 @@ function renderUIWidget(uri: string, widgetProps: any, fallbackMarkdown: string)
           src={iframeSrc}
           className="w-full h-96 border rounded"
           title="Care Finder Widget"
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin allow-forms"
           onLoad={(e) => {
             // Send props via postMessage when iframe loads
             const iframe = e.target as HTMLIFrameElement;
-            iframe.contentWindow?.postMessage({
-              type: 'widget-props',
-              props: widgetProps
-            }, window.location.origin);
+            // Small delay to ensure iframe content is ready
+            setTimeout(() => {
+              iframe.contentWindow?.postMessage({
+                type: 'widget-props',
+                props: widgetProps
+              }, window.location.origin);
+            }, 100);
           }}
         />
         <div className="mt-2 text-xs text-slate-500">
@@ -124,6 +127,21 @@ export default async function FindCareComponent(props: Props): Promise<JSX.Eleme
       : { results: props.results, query: { zip: props.query, venue: props.venue } };
 
     return renderUIWidget(props.ui, widgetData, props.fallback_markdown || "No fallback content available");
+  }
+
+  // Fallback: If we have results but no explicit UI directive, try to render UI anyway
+  // This handles cases where the ChatGPT Apps SDK passes raw data but we want UI rendering
+  if (props.results && props.results.length > 0) {
+    const fallbackMarkdown = `### Care Facilities\n${props.results.map((f: any) =>
+      `- ${f.name} (${f.distance?.toFixed(1) || 'N/A'} mi) - ${f.openNow ? 'Open' : 'Closed'}`
+    ).join('\n')}`;
+
+    const widgetData = {
+      query: { zip: props.query, venue: props.venue },
+      results: props.results
+    };
+
+    return renderUIWidget("ui://find-care/widget.html", widgetData, fallbackMarkdown);
   }
 
   // Original rendering logic
