@@ -135,6 +135,32 @@ function componentHtml() {
 const MCP_BASE_URL = (process.env.PUBLIC_BASE_URL && process.env.PUBLIC_BASE_URL.trim() !== "")
     ? process.env.PUBLIC_BASE_URL
     : `http://127.0.0.1:${String(process.env.PORT || 8080)}`;
+function renderMarkdownFallback(payload) {
+    const results = Array.isArray(payload.results) ? payload.results : [];
+    if (results.length === 0)
+        return "No facilities found.";
+    const query = payload.query || {};
+    const location = query.zip ? `near ${query.zip}` : "in your area";
+    const venueName = (query.venue || "urgent_care").replace("_", " ");
+    let markdown = `### Providence ${venueName} ${location}\n`;
+    for (const f of results.slice(0, 5)) { // Limit to first 5 for brevity
+        const name = f.name || f.id || "Unknown facility";
+        const address = [f?.address?.city, f?.address?.state].filter(Boolean).join(", ") || "Address unavailable";
+        const openStatus = f.openNow ? "Open" : "Closed";
+        markdown += `- ${name} (${address}) — ${openStatus}\n`;
+    }
+    if (results.length > 5) {
+        markdown += `- ... and ${results.length - 5} more\n`;
+    }
+    return markdown;
+}
+function wrapWithUI(payload) {
+    return {
+        ui: "ui://find-care/widget.html",
+        props: payload,
+        fallback_markdown: renderMarkdownFallback(payload)
+    };
+}
 async function callTool(name, args) {
     const payload = args ?? {};
     switch (name) {
@@ -168,12 +194,12 @@ async function callTool(name, args) {
                 throw new Error(`findcare_http_${r.status}`);
             const facilities = await r.json();
             const arr = Array.isArray(facilities) ? facilities : [];
-            const first = arr[0] || {};
-            const lat = Number(first?.lat || payload?.lat || 0) || 0;
-            const lon = Number(first?.lon || payload?.lon || 0) || 0;
+            const uiPayload = wrapWithUI({
+                query: { zip: payload?.zip, venue: payload?.venue },
+                results: arr
+            });
             return {
-                content: [{ type: "text", text: `Showing ${arr.length} options.` }],
-                structuredContent: { results: arr, lat, lon, venue: payload?.venue || "urgent_care" }
+                content: [{ type: "text", text: JSON.stringify(uiPayload) }]
             };
         }
         case "get_availability_v1": {
