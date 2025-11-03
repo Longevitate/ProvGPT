@@ -39,8 +39,8 @@ function renderUIWidget(uri: string, widgetProps: any, fallbackMarkdown: string)
   }
 
   try {
-    // For now, render as iframe. In production, this could be component-based
-    const iframeSrc = `/public/find-care-test.html?props=${encodeURIComponent(JSON.stringify(widgetProps))}`;
+    // Use proper embed path
+    const iframeSrc = `/public/embeds/find-care/widget.html`;
 
     return (
       <div className="ui-widget-container">
@@ -81,6 +81,14 @@ function renderUIWidget(uri: string, widgetProps: any, fallbackMarkdown: string)
           className="w-full h-96 border rounded"
           title="Care Finder Widget"
           sandbox="allow-scripts allow-same-origin"
+          onLoad={(e) => {
+            // Send props via postMessage when iframe loads
+            const iframe = e.target as HTMLIFrameElement;
+            iframe.contentWindow?.postMessage({
+              type: 'widget-props',
+              props: widgetProps
+            }, window.location.origin);
+          }}
         />
         <div className="mt-2 text-xs text-slate-500">
           Widget: {uri}
