@@ -62,6 +62,34 @@ const tools: ToolDefinition[] = [
       additionalProperties: false,
     },
   },
+  {
+    name: "get_availability_v1",
+    description: "Internal UI callback: return next appointment slots for a facility. Do not call directly.",
+    inputSchema: {
+      type: "object",
+      required: ["facilityId"],
+      properties: {
+        facilityId: { type: "string" },
+        serviceCode: { type: "string", default: "urgent-care" },
+        days: { type: "integer", minimum: 1, maximum: 14, default: 7 },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "book_appointment_v1",
+    description: "Internal UI callback: generate Providence booking deep link. Do not call directly.",
+    inputSchema: {
+      type: "object",
+      required: ["facilityId", "slotId"],
+      properties: {
+        facilityId: { type: "string" },
+        slotId: { type: "string" },
+        patientContextToken: { type: "string" },
+      },
+      additionalProperties: false,
+    },
+  },
 ];
 
 const COMPONENT_RESOURCE = {
@@ -114,7 +142,29 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
         body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(`findcare_http_${r.status}`);
-      return await r.json();
+      const facilities = await r.json();
+      const arr = Array.isArray(facilities) ? facilities : [];
+      const first = arr[0] || {};
+      const lat = Number(first?.lat || payload?.lat || 0) || 0;
+      const lon = Number(first?.lon || payload?.lon || 0) || 0;
+      return {
+        __render: {
+          type: "component",
+          resource: COMPONENT_RESOURCE.uri,
+          props: {
+            query: "Find care",
+            lat,
+            lon,
+            venue: String((payload as any)?.venue || "urgent_care"),
+            acceptsInsurancePlanId: (payload as any)?.acceptsInsurancePlanId,
+            results: arr,
+          },
+          actions: {
+            getAvailability: { name: "get_availability_v1" },
+            onBook: { name: "book_appointment_v1" },
+          },
+        },
+      } as any;
     }
     case "get_availability_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/availability`, {
@@ -189,12 +239,27 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       }
       try {
         const result = await callTool(name, args);
+        if ((result as any)?.__render) {
+          const render = (result as any).__render;
+          return makeResponse(reqBody, {
+            content: [
+              {
+                type: "ui",
+                component: {
+                  resource: render.resource,
+                  props: render.props,
+                  actions: render.actions,
+                },
+              },
+            ],
+          });
+        }
         return makeResponse(reqBody, {
           content: [
-            { 
-              type: "text", 
-              text: JSON.stringify(result)
-            }
+            {
+              type: "text",
+              text: JSON.stringify(result),
+            },
           ],
         });
       } catch (err) {
