@@ -18,9 +18,12 @@
     .link { color: #2563eb; text-decoration: none; }
   </style>
 </head>
-<body>
-  <h1>Find Care - Local Test</h1>
-  <form id="q">
+  <body>
+  <h1>Providence Care Finder</h1>
+  <div id="embedded-notice" style="display:none; background:#e0f2fe; padding:8px; margin-bottom:10px; border-radius:4px; font-size:12px;">
+    Embedded widget mode - showing pre-loaded results
+  </div>
+  <form id="q" style="display:none;">
     <div class="row">
       <label>Age <input type="number" id="age" value="12" /></label>
       <label>Symptoms <input type="text" id="symptoms" value="fever, sore throat" size="30"/></label>
@@ -48,6 +51,20 @@
       const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!r.ok) throw new Error(await r.text());
       return r.json();
+    }
+
+    // Check for embedded props in URL
+    function getEmbeddedProps() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const propsParam = urlParams.get('props');
+      if (propsParam) {
+        try {
+          return JSON.parse(decodeURIComponent(propsParam));
+        } catch (e) {
+          console.error('Failed to parse embedded props:', e);
+        }
+      }
+      return null;
     }
 
     async function renderFacilities(list) {
@@ -136,6 +153,17 @@
         }
         return map;
       }
+    }
+
+    // Check for embedded props on load
+    const embeddedProps = getEmbeddedProps();
+    if (embeddedProps && embeddedProps.results) {
+      // Embedded mode - show pre-loaded results
+      document.getElementById('embedded-notice').style.display = 'block';
+      renderFacilities(embeddedProps.results);
+    } else {
+      // Interactive mode - show form
+      document.getElementById('q').style.display = 'block';
     }
 
     document.getElementById('q').addEventListener('submit', async (e) => {

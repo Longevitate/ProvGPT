@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Detection Test</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    .test-section { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .result { margin-top: 8px; padding: 8px; background: #f9fafb; border-radius: 4px; }
+    button { padding: 8px 16px; margin: 4px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; }
+    button:hover { background: #f3f4f6; }
+  </style>
+</head>
+<body>
+  <h1>UI Detection Test</h1>
+
+  <div class="test-section">
+    <h3>Test 1: Valid UI Response</h3>
+    <button onclick="testValidUI()">Test Valid UI Response</button>
+    <div id="test1-result" class="result">Click to test...</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Test 2: Invalid UI URI</h3>
+    <button onclick="testInvalidUI()">Test Invalid UI URI</button>
+    <div id="test2-result" class="result">Click to test...</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Test 3: No UI Field</h3>
+    <button onclick="testNoUI()">Test No UI Field</button>
+    <div id="test3-result" class="result">Click to test...</div>
+  </div>
+
+  <div class="test-section">
+    <h3>Test 4: Widget Rendering</h3>
+    <button onclick="testWidgetRender()">Test Widget Rendering</button>
+    <div id="test4-result" class="result">Click to test...</div>
+  </div>
+
+  <script>
+    // Simulate the component logic
+    const ALLOWED_UI_URIS = new Set([
+      "ui://find-care/widget.html",
+      "ui://find-care/confirmation.html"
+    ]);
+
+    function detectAndRender(props) {
+      if (props.ui && props.ui.startsWith("ui://")) {
+        if (!ALLOWED_UI_URIS.has(props.ui)) {
+          return `❌ Fallback: Unrecognized UI URI: ${props.ui}\n\n${props.fallback_markdown || 'No fallback'}`;
+        }
+
+        const widgetData = props.uiProps && props.uiProps.query && props.uiProps.results
+          ? props.uiProps
+          : { results: props.results || [], query: props.query || {} };
+
+        return `✅ Widget Rendered: ${props.ui}\nData: ${JSON.stringify(widgetData, null, 2)}\nFallback available: ${!!props.fallback_markdown}`;
+      }
+
+      return `📝 Traditional Render: ${props.results ? props.results.length + ' facilities' : 'No results'}`;
+    }
+
+    function testValidUI() {
+      const props = {
+        ui: "ui://find-care/widget.html",
+        uiProps: {
+          query: { zip: "98201", venue: "urgent_care" },
+          results: [
+            { id: "test1", name: "Test Facility 1", distance: 5.2, openNow: true },
+            { id: "test2", name: "Test Facility 2", distance: 8.1, openNow: false }
+          ]
+        },
+        fallback_markdown: "### Test Facilities\n- Test Facility 1 (5.2 mi) — Open\n- Test Facility 2 (8.1 mi) — Closed"
+      };
+      document.getElementById('test1-result').textContent = detectAndRender(props);
+    }
+
+    function testInvalidUI() {
+      const props = {
+        ui: "ui://evil/widget.html",
+        uiProps: { results: [] },
+        fallback_markdown: "Fallback content"
+      };
+      document.getElementById('test2-result').textContent = detectAndRender(props);
+    }
+
+    function testNoUI() {
+      const props = {
+        results: [
+          { id: "test1", name: "Test Facility 1", distance: 5.2, openNow: true }
+        ],
+        query: "98201",
+        venue: "urgent_care"
+      };
+      document.getElementById('test3-result').textContent = detectAndRender(props);
+    }
+
+    function testWidgetRender() {
+      const iframeSrc = `/public/find-care-test.html?props=${encodeURIComponent(JSON.stringify({
+        query: { zip: "98201", venue: "urgent_care" },
+        results: [
+          { id: "test1", name: "Test Facility 1", distance: 5.2, openNow: true, address: { line1: "123 Main St", city: "Test City", state: "WA", zip: "98201" } }
+        ]
+      }))}`;
+
+      document.getElementById('test4-result').innerHTML = `
+        <p>Widget would render iframe:</p>
+        <code style="font-size:12px; word-break: break-all;">${iframeSrc}</code>
+        <br><br>
+        <iframe src="${iframeSrc}" style="width:100%; height:200px; border:1px solid #ccc;" title="Test Widget"></iframe>
+      `;
+    }
+  </script>
+</body>
+</html>

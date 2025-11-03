@@ -20,9 +20,105 @@ type Props = {
   results: FacilityCard[];
   getAvailability: (facilityId: string) => Promise<string[]>;
   onBook: (facilityId: string, slotId: string) => Promise<{ deepLink: string }>;
+  // UI rendering support
+  ui?: string;
+  uiProps?: any;
+  fallback_markdown?: string;
 };
 
+// Allowlisted UI URIs for security
+const ALLOWED_UI_URIS = new Set([
+  "ui://find-care/widget.html",
+  "ui://find-care/confirmation.html"
+]);
+
+function renderUIWidget(uri: string, widgetProps: any, fallbackMarkdown: string): JSX.Element {
+  // Check if URI is allowlisted
+  if (!ALLOWED_UI_URIS.has(uri)) {
+    return renderFallback(fallbackMarkdown, `Unrecognized UI URI: ${uri}`);
+  }
+
+  try {
+    // For now, render as iframe. In production, this could be component-based
+    const iframeSrc = `/public/find-care-test.html?props=${encodeURIComponent(JSON.stringify(widgetProps))}`;
+
+    return (
+      <div className="ui-widget-container">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium">Interactive Care Finder</span>
+          <details className="text-xs">
+            <summary className="cursor-pointer px-2 py-1 rounded bg-slate-100 hover:bg-slate-200">
+              Options
+            </summary>
+            <div className="mt-1 p-2 bg-white border rounded shadow-sm">
+              <button
+                className="block w-full text-left text-xs px-2 py-1 rounded hover:bg-slate-50"
+                onClick={() => {
+                  // Simple toggle - replace widget with fallback
+                  const container = document.querySelector('.ui-widget-container');
+                  if (container) {
+                    const fallbackDiv = document.createElement('div');
+                    fallbackDiv.className = 'fallback-container';
+                    fallbackDiv.innerHTML = `
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium">Text View</span>
+                        <button class="text-xs px-2 py-1 rounded bg-slate-100 hover:bg-slate-200"
+                                onclick="location.reload()">Show Widget</button>
+                      </div>
+                      <pre class="text-sm whitespace-pre-wrap font-mono">${fallbackMarkdown}</pre>
+                    `;
+                    container.parentNode?.replaceChild(fallbackDiv, container);
+                  }
+                }}
+              >
+                Show as Text
+              </button>
+            </div>
+          </details>
+        </div>
+        <iframe
+          src={iframeSrc}
+          className="w-full h-96 border rounded"
+          title="Care Finder Widget"
+          sandbox="allow-scripts allow-same-origin"
+        />
+        <div className="mt-2 text-xs text-slate-500">
+          Widget: {uri}
+        </div>
+      </div>
+    );
+  } catch (error) {
+    return renderFallback(fallbackMarkdown, `Widget rendering failed: ${error}`);
+  }
+}
+
+function renderFallback(markdown: string, error?: string): JSX.Element {
+  const content = error ? `${error}\n\n${markdown}` : markdown;
+
+  return (
+    <div className="fallback-container">
+      {error && (
+        <div className="mb-2 p-2 rounded bg-red-50 text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+      <pre className="text-sm whitespace-pre-wrap font-mono">{content}</pre>
+    </div>
+  );
+}
+
 export default async function FindCareComponent(props: Props): Promise<JSX.Element> {
+  // Check if we should render a UI widget
+  if (props.ui && props.ui.startsWith("ui://")) {
+    // If uiProps contains the traditional structure (query + results), use it directly
+    const widgetData = props.uiProps && props.uiProps.query && props.uiProps.results
+      ? props.uiProps
+      : { results: props.results, query: { zip: props.query, venue: props.venue } };
+
+    return renderUIWidget(props.ui, widgetData, props.fallback_markdown || "No fallback content available");
+  }
+
+  // Original rendering logic
   const top = props.results.slice(0, 2);
   const nextSlotsMap: Record<string, string[]> = {};
   for (const f of top) {
