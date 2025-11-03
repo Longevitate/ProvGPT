@@ -39,28 +39,9 @@ const tools: ToolDefinition[] = [
     },
   },
   {
-    name: "triage_v1",
-    description:
-      "Suggest care venue (ER/urgent/primary/virtual) & urgency based on symptoms and age.",
-    inputSchema: {
-      type: "object",
-      required: ["symptoms", "age"],
-      properties: {
-        symptoms: { type: "string" },
-        age: { type: "integer", minimum: 0, maximum: 120 },
-        pregnancyStatus: {
-          type: "string",
-          enum: ["unknown", "pregnant", "not_pregnant"],
-          default: "unknown",
-        },
-        durationHours: { type: "integer", minimum: 0, maximum: 10000 },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
     name: "find_care_v1",
-    description: "Find Providence care options near a location with filters.",
+    description:
+      "Single call to find nearby care after collecting basics. Provide zip (preferred) or lat/lon, venue, and optional radiusMiles (default 40). Returns Providence facilities sorted by distance with ids equal to departmentUrlName; booking links are constructed as scheduling.care.psjhealth.org using that id. Use this one tool after clarifying age and location; avoid calling other tools.",
     inputSchema: {
       type: "object",
       required: ["venue"],
@@ -77,34 +58,6 @@ const tools: ToolDefinition[] = [
         acceptsInsurancePlanName: { type: "string" },
         openNow: { type: "boolean" },
         pediatricFriendly: { type: "boolean" },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "get_availability_v1",
-    description: "Fetch next available appointment slots for a facility/service.",
-    inputSchema: {
-      type: "object",
-      required: ["facilityId"],
-      properties: {
-        facilityId: { type: "string" },
-        serviceCode: { type: "string", default: "urgent-care" },
-        days: { type: "integer", minimum: 1, maximum: 14, default: 7 },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "book_appointment_v1",
-    description: "Book appointment or generate deep link to MyChart flow (mock).",
-    inputSchema: {
-      type: "object",
-      required: ["facilityId", "slotId", "patientContextToken"],
-      properties: {
-        facilityId: { type: "string" },
-        slotId: { type: "string" },
-        patientContextToken: { type: "string" },
       },
       additionalProperties: false,
     },
@@ -205,12 +158,12 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
         protocolVersion: "2025-03-26",
         capabilities: {
           tools: {
-            listChanged: false,
+            listChanged: true,
           },
         },
         serverInfo: {
           name: "providence_ai_booking",
-          version: "0.1.0",
+          version: "0.1.1",
         },
       });
     }
