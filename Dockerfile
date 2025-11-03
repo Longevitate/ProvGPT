@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build
+RUN chmod +x node_modules/.bin/tsc && npm run build
 
 FROM node:20-slim AS runtime
 ENV NODE_ENV=production
