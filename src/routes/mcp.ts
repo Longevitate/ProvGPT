@@ -41,8 +41,7 @@ const tools: ToolDefinition[] = [
   },
   {
     name: "find_care_v1",
-    description:
-      "Single call to find nearby care after collecting basics. Provide zip (preferred) or lat/lon, venue, and optional radiusMiles (default 40). Returns Providence facilities sorted by distance; UI renders timeslots.",
+    description: "Find nearby Providence care facilities by location and venue type.",
     inputSchema: {
       type: "object",
       required: ["venue"],
@@ -63,15 +62,12 @@ const tools: ToolDefinition[] = [
       additionalProperties: false,
     },
     _meta: {
-      "openai/outputTemplate": "ui://find-care/widget.html",
-      "openai/widgetAccessible": true,
-      "openai/toolInvocation/invoking": "Finding nearby care…",
-      "openai/toolInvocation/invoked": "Found nearby care.",
+      "openai/widgetAccessible": true
     }
   },
   {
     name: "get_availability_v1",
-    description: "Internal UI callback: return next appointment slots for a facility. Do not call directly.",
+    description: "Get available appointment slots for a specific facility.",
     inputSchema: {
       type: "object",
       required: ["facilityId"],
@@ -86,7 +82,7 @@ const tools: ToolDefinition[] = [
   },
   {
     name: "book_appointment_v1",
-    description: "Internal UI callback: generate Providence booking deep link. Do not call directly.",
+    description: "Generate booking link for a selected appointment slot.",
     inputSchema: {
       type: "object",
       required: ["facilityId", "slotId"],
