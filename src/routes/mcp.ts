@@ -279,6 +279,7 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
           tools: {
             listChanged: true,
           },
+          resources: {},
         },
         serverInfo: {
           name: "providence_ai_booking",
@@ -352,13 +353,11 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
           uri,
           name: COMPONENT_RESOURCE.name,
           mimeType: COMPONENT_RESOURCE.mimeType,
-          mime_type: COMPONENT_RESOURCE.mimeType,
         },
         contents: [
           {
             uri,
             mimeType: COMPONENT_RESOURCE.mimeType,
-            mime_type: COMPONENT_RESOURCE.mimeType,
             type: "text",
             text: componentHtml(),
             _meta: {
