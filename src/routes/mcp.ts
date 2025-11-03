@@ -428,6 +428,7 @@ mcpRouter.get("/", (_req, res) => {
       tools: {
         listChanged: true,
       },
+      resources: {},
     },
     serverInfo: {
       name: "providence_ai_booking",
