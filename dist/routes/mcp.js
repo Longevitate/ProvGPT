@@ -109,7 +109,7 @@ function componentHtml() {
         el('div', { className: 'title', innerText: f.name || f.id }),
         el('div', { className: 'muted', innerText: ((f.distance||0).toFixed ? f.distance.toFixed(1) : String(f.distance||'')) + ' mi' })
       ]);
-      const addr = el('div', { className: 'muted', innerText: [f?.address?.line1, f?.address?.city, f?.state, f?.address?.zip].filter(Boolean).join(', ') });
+      const addr = el('div', { className: 'muted', innerText: [f?.address?.line1, f?.address?.city, f?.address?.state, f?.address?.zip].filter(Boolean).join(', ') });
       const slots = el('div', { className: 'slots' });
       card.appendChild(header);
       card.appendChild(addr);
@@ -121,26 +121,21 @@ function componentHtml() {
       slots.innerHTML = '';
       if (list.length === 0) { slots.innerText = 'No slots'; continue; }
       for (const s of list) {
-        const a = el('a', { className: 'btn', href: `, https = new Date(s).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    slots.appendChild(a);
+        const href = 'https://scheduling.care.psjhealth.org/retail?timeSlot=' + encodeURIComponent(s) + '&departmentUrlName=' + encodeURIComponent(f.id) + '&brand=providence';
+        const a = el('a', { className: 'btn', href, target: '_blank' });
+        a.innerText = new Date(s).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        slots.appendChild(a);
+      }
+    }
+  }
+  window.addEventListener('load', render);
+  `;
+    return `<!doctype html><html><head><meta charset="utf-8"/><style>${css}</style></head><body><div id="root"></div><script type="module">${js}</script></body></html>`;
 }
-window.addEventListener('load', render);
-`;
-  return ` < !doctype;
-html > charset;
-"utf-8" /  > $;
-{
-    css;
-}
-/style></head > id;
-"root" > /div><script type="module">${js}</script > /body></html > `;
-}
-
 const MCP_BASE_URL = (process.env.PUBLIC_BASE_URL && process.env.PUBLIC_BASE_URL.trim() !== "")
-  ? process.env.PUBLIC_BASE_URL
-  : `;
-http: //127.0.0.1:${String(process.env.PORT || 8080)}`;
- async function callTool(name, args) {
+    ? process.env.PUBLIC_BASE_URL
+    : `http://127.0.0.1:${String(process.env.PORT || 8080)}`;
+async function callTool(name, args) {
     const payload = args ?? {};
     switch (name) {
         case "ping_v1": {

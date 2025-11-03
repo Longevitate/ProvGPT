@@ -138,7 +138,7 @@ function componentHtml(): string {
         el('div', { className: 'title', innerText: f.name || f.id }),
         el('div', { className: 'muted', innerText: ((f.distance||0).toFixed ? f.distance.toFixed(1) : String(f.distance||'')) + ' mi' })
       ]);
-      const addr = el('div', { className: 'muted', innerText: [f?.address?.line1, f?.address?.city, f?.state, f?.address?.zip].filter(Boolean).join(', ') });
+      const addr = el('div', { className: 'muted', innerText: [f?.address?.line1, f?.address?.city, f?.address?.state, f?.address?.zip].filter(Boolean).join(', ') });
       const slots = el('div', { className: 'slots' });
       card.appendChild(header);
       card.appendChild(addr);
@@ -150,7 +150,8 @@ function componentHtml(): string {
       slots.innerHTML = '';
       if (list.length === 0) { slots.innerText = 'No slots'; continue; }
       for (const s of list) {
-        const a = el('a', { className: 'btn', href: `https://scheduling.care.psjhealth.org/retail?timeSlot=${encodeURIComponent(s)}&departmentUrlName=${encodeURIComponent(f.id)}&brand=providence`, target: '_blank' });
+        const href = 'https://scheduling.care.psjhealth.org/retail?timeSlot=' + encodeURIComponent(s) + '&departmentUrlName=' + encodeURIComponent(f.id) + '&brand=providence';
+        const a = el('a', { className: 'btn', href, target: '_blank' });
         a.innerText = new Date(s).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         slots.appendChild(a);
       }
