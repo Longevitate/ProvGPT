@@ -227,13 +227,13 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       if (!r.ok) throw new Error(`findcare_http_${r.status}`);
       const facilities = await r.json();
       const arr = Array.isArray(facilities) ? facilities : [];
-      const uiPayload = wrapWithUI({
-        query: { zip: (payload as any)?.zip, venue: (payload as any)?.venue },
-        results: arr
-      });
+      const first = arr[0] || {};
+      const lat = Number(first?.lat || (payload as any)?.lat || 0) || 0;
+      const lon = Number(first?.lon || (payload as any)?.lon || 0) || 0;
       return {
-        content: [{ type: "text", text: JSON.stringify(uiPayload) }]
-      };
+        content: [{ type: "text", text: `Showing ${arr.length} options.` }],
+        structuredContent: { results: arr, lat, lon, venue: (payload as any)?.venue || "urgent_care" }
+      } as any;
     }
     case "get_availability_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/availability`, {
