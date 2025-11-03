@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Find Care - Test</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .badge { padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    .ok { background: #dcfce7; color: #166534; }
+    .muted { background: #e5e7eb; color: #374151; }
+    .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .slots { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .datebar { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px; }
+    .datebar .date-label { font-weight: 600; }
+    button, select, input { font-size: 14px; padding: 6px 8px; }
+    .link { color: #2563eb; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Find Care - Local Test</h1>
+  <form id="q">
+    <div class="row">
+      <label>Age <input type="number" id="age" value="12" /></label>
+      <label>Symptoms <input type="text" id="symptoms" value="fever, sore throat" size="30"/></label>
+    </div>
+    <div class="row">
+      <label>ZIP <input type="text" id="zip" value="98201" size="8"/></label>
+      <label>Venue
+        <select id="venue">
+          <option value="urgent_care" selected>Urgent care</option>
+          <option value="primary_care">Primary care</option>
+          <option value="er">Emergency</option>
+          <option value="virtual">Virtual</option>
+        </select>
+      </label>
+      <label>Radius (mi) <input type="number" id="radius" value="40" /></label>
+      <label><input type="checkbox" id="openNow"/> Open now</label>
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  <div id="results"></div>
+
+  <script>
+    async function post(url, body) {
+      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error(await r.text());
+      return r.json();
+    }
+
+    async function renderFacilities(list) {
+      const c = document.getElementById('results');
+      c.innerHTML = '';
+      if (!Array.isArray(list) || list.length === 0) {
+        c.textContent = 'No results';
+        return;
+      }
+      for (const f of list) {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>${f.name}</strong></div>
+            <div style="font-size:12px;color:#6b7280;">${(f.distance||0).toFixed(1)} mi</div>
+          </div>
+          <div style="font-size:12px;color:#374151;">${f.address?.line1 || ''}, ${f.address?.city || ''}, ${f.address?.state || ''} ${f.address?.zip || ''}</div>
+          <div class="datebar" id="datebar-${f.id}"></div>
+          <div class="slots" id="slots-${f.id}"></div>
+        `;
+        c.appendChild(div);
+      }
+
+      // Auto-load slots for each facility
+      const cards = Array.from(c.querySelectorAll('.card'));
+      for (const card of cards) {
+        const slotsEl = card.querySelector('.slots');
+        const datebar = card.querySelector('.datebar');
+        if (!slotsEl || !datebar) continue;
+        const idAttr = slotsEl.id || '';
+        const fid = idAttr.replace('slots-', '');
+        if (!fid) continue;
+        slotsEl.textContent = 'Loading...';
+        try {
+          const { slots } = await post('/api/availability', { facilityId: fid, days: 7, serviceCode: 'urgent-care' });
+          const groups = groupSlotsByDate(slots || []);
+          const dates = Object.keys(groups).sort();
+          let idx = 0;
+
+          function renderDateBar() {
+            datebar.innerHTML = '';
+            if (dates.length === 0) { datebar.textContent = 'No slots'; return; }
+            const prev = document.createElement('button'); prev.textContent = '<'; prev.disabled = idx === 0;
+            const label = document.createElement('span'); label.className = 'date-label'; label.textContent = new Date(dates[idx] + 'T00:00:00').toLocaleDateString();
+            const next = document.createElement('button'); next.textContent = '>'; next.disabled = idx === dates.length - 1;
+            prev.onclick = () => { if (idx > 0) { idx--; renderDateBar(); renderSlots(); } };
+            next.onclick = () => { if (idx < dates.length - 1) { idx++; renderDateBar(); renderSlots(); } };
+            datebar.appendChild(prev); datebar.appendChild(label); datebar.appendChild(next);
+          }
+
+          function renderSlots() {
+            slotsEl.innerHTML = '';
+            if (dates.length === 0) { slotsEl.textContent = 'No slots'; return; }
+            const daySlots = groups[dates[idx]] || [];
+            if (daySlots.length === 0) { slotsEl.textContent = 'No slots'; return; }
+            for (const s of daySlots.slice(0, 12)) {
+              const a = document.createElement('a');
+              a.href = `https://scheduling.care.psjhealth.org/retail?timeSlot=${encodeURIComponent(s)}&departmentUrlName=${encodeURIComponent(fid)}&brand=providence`;
+              a.target = '_blank';
+              a.textContent = new Date(s).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+              a.style.display = 'inline-block';
+              a.style.padding = '6px 10px';
+              a.style.borderRadius = '6px';
+              a.style.background = '#00338e';
+              a.style.color = '#ffffff';
+              a.style.textDecoration = 'none';
+              a.style.fontSize = '12px';
+              slotsEl.appendChild(a);
+            }
+          }
+
+          renderDateBar();
+          renderSlots();
+        } catch (err) {
+          slotsEl.textContent = 'Error loading slots';
+        }
+      }
+
+      function groupSlotsByDate(slots) {
+        const map = {};
+        for (const s of slots) {
+          const key = String(s).slice(0, 10); // YYYY-MM-DD from ISO with offset
+          if (!map[key]) map[key] = [];
+          map[key].push(s);
+        }
+        return map;
+      }
+    }
+
+    document.getElementById('q').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const zip = document.getElementById('zip').value.trim();
+      const venue = document.getElementById('venue').value;
+      const radiusMiles = Number(document.getElementById('radius').value);
+      const openNow = document.getElementById('openNow').checked ? true : undefined;
+      try {
+        const results = await post('/api/search-facilities', { zip, venue, radiusMiles, openNow });
+        renderFacilities(results);
+      } catch (err) {
+        alert('Search failed');
+      }
+    });
+  </script>
+</body>
+</html>
+
+

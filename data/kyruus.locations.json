@@ -1,0 +1,1646 @@
+[
+  {
+    "id": "Lombard",
+    "name": "Providence ExpressCare - North Lombard",
+    "venue": "urgent_care",
+    "lat": 45.582446,
+    "lon": -122.724518,
+    "address": {
+      "line1": "5308 N Lombard St #102",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97203"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Lombard",
+    "locationCode": "Lombard",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-north-lombard"
+  },
+  {
+    "id": "LaceyMarketplace",
+    "name": "Providence ExpressCare - Lacey Marketplace",
+    "venue": "urgent_care",
+    "lat": 47.05941,
+    "lon": -122.764178,
+    "address": {
+      "line1": "1350 Marvin Rd NE STE D",
+      "city": "Lacey",
+      "state": "WA",
+      "zip": "98516"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "LaceyMarketplace",
+    "locationCode": "LaceyMarketplace",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-lacey-marketplace"
+  },
+  {
+    "id": "Kruseway",
+    "name": "Providence ExpressCare - Kruse Way",
+    "venue": "urgent_care",
+    "lat": 45.418278,
+    "lon": -122.725252,
+    "address": {
+      "line1": "4823 Meadows Rd #127",
+      "city": "Lake Oswego",
+      "state": "OR",
+      "zip": "97035"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Kruseway",
+    "locationCode": "Kruseway",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-kruse-way"
+  },
+  {
+    "id": "CanyonLakes",
+    "name": "Kadlec ExpressCare - Canyon Lakes",
+    "venue": "urgent_care",
+    "lat": 46.185171,
+    "lon": -119.175368,
+    "address": {
+      "line1": "4008 W 27th Ave STE 103",
+      "city": "Kennewick",
+      "state": "WA",
+      "zip": "99337"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "CanyonLakes",
+    "locationCode": "CanyonLakes",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/kadlec/expresscare-canyon-lakes"
+  },
+  {
+    "id": "EagleRiver",
+    "name": "Providence ExpressCare - Eagle River",
+    "venue": "urgent_care",
+    "lat": 61.340225,
+    "lon": -149.562424,
+    "address": {
+      "line1": "17101 Snowmobile Ln #114",
+      "city": "Eagle River",
+      "state": "AK",
+      "zip": "99577"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "EagleRiver",
+    "locationCode": "EagleRiver",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/ak/expresscare-eagle-river"
+  },
+  {
+    "id": "Tikahtnu",
+    "name": "Providence ExpressCare - Tikahtnu",
+    "venue": "urgent_care",
+    "lat": 61.22752,
+    "lon": -149.742718,
+    "address": {
+      "line1": "1118 N Muldoon Rd Ste 130",
+      "city": "Anchorage",
+      "state": "AK",
+      "zip": "99504"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Tikahtnu",
+    "locationCode": "Tikahtnu",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/ak/expresscare-tikahtnu"
+  },
+  {
+    "id": "Huffman",
+    "name": "Providence ExpressCare - Huffman",
+    "venue": "urgent_care",
+    "lat": 61.110626,
+    "lon": -149.856054,
+    "address": {
+      "line1": "1389 Huffman Park Dr #110",
+      "city": "Anchorage",
+      "state": "AK",
+      "zip": "99515"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Anchorage",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Huffman",
+    "locationCode": "Huffman",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/ak/expresscare-huffman"
+  },
+  {
+    "id": "Pasco",
+    "name": "Kadlec ExpressCare at Walgreens - Pasco",
+    "venue": "urgent_care",
+    "lat": 46.27732,
+    "lon": -119.187164,
+    "address": {
+      "line1": "5506 N Rd 68",
+      "city": "Pasco",
+      "state": "WA",
+      "zip": "99301"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Pasco",
+    "locationCode": "Pasco",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/kadlec/expresscare-pasco"
+  },
+  {
+    "id": "GeorgeWAWay",
+    "name": "Kadlec ExpressCare at Walgreens - Richland",
+    "venue": "urgent_care",
+    "lat": 46.294611,
+    "lon": -119.275049,
+    "address": {
+      "line1": "1601 George Washington Way",
+      "city": "Richland",
+      "state": "WA",
+      "zip": "99354"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "GeorgeWAWay",
+    "locationCode": "GeorgeWAWay",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/kadlec/expresscare-richland"
+  },
+  {
+    "id": "Interstate",
+    "name": "Providence ExpressCare - Interstate",
+    "venue": "urgent_care",
+    "lat": 45.555001,
+    "lon": -122.681992,
+    "address": {
+      "line1": "4340 N Interstate Ave",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97217"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Interstate",
+    "locationCode": "Interstate",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-interstate"
+  },
+  {
+    "id": "HappyValley",
+    "name": "Providence ExpressCare at Walgreens - Happy Valley",
+    "venue": "urgent_care",
+    "lat": 45.429996,
+    "lon": -122.539501,
+    "address": {
+      "line1": "11995 SE Sunnyside Rd",
+      "city": "Clackamas",
+      "state": "OR",
+      "zip": "97015"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "HappyValley",
+    "locationCode": "HappyValley",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-happy-valley"
+  },
+  {
+    "id": "Bethany",
+    "name": "Providence ExpressCare at Walgreens - Bethany",
+    "venue": "urgent_care",
+    "lat": 45.555158,
+    "lon": -122.835152,
+    "address": {
+      "line1": "4816 NW Bethany Blvd",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97229"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Bethany",
+    "locationCode": "Bethany",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-bethany"
+  },
+  {
+    "id": "Creston",
+    "name": "Providence ExpressCare - Creston",
+    "venue": "urgent_care",
+    "lat": 45.49687,
+    "lon": -122.623458,
+    "address": {
+      "line1": "3822 SE Powell Blvd",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97202"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Creston",
+    "locationCode": "Creston",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-creston"
+  },
+  {
+    "id": "Newberg",
+    "name": "Providence ExpressCare at Walgreens - Newberg",
+    "venue": "urgent_care",
+    "lat": 45.301005,
+    "lon": -122.961504,
+    "address": {
+      "line1": "1840 Portland Rd",
+      "city": "Newberg",
+      "state": "OR",
+      "zip": "97132"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Newberg",
+    "locationCode": "Newberg",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-newberg"
+  },
+  {
+    "id": "Pearl",
+    "name": "Providence ExpressCare - Pearl District",
+    "venue": "urgent_care",
+    "lat": 45.530304,
+    "lon": -122.685606,
+    "address": {
+      "line1": "1025 NW 14th Ave",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97209"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Pearl",
+    "locationCode": "Pearl",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-pearl-district"
+  },
+  {
+    "id": "Orenco",
+    "name": "Providence ExpressCare - Orenco",
+    "venue": "urgent_care",
+    "lat": 45.534544,
+    "lon": -122.916536,
+    "address": {
+      "line1": "1336 NE Orenco Station Pkwy",
+      "city": "Hillsboro",
+      "state": "OR",
+      "zip": "97124"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Orenco",
+    "locationCode": "Orenco",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-orenco"
+  },
+  {
+    "id": "OregonCity",
+    "name": "Providence ExpressCare - Oregon City",
+    "venue": "urgent_care",
+    "lat": 45.334123,
+    "lon": -122.592127,
+    "address": {
+      "line1": "13428 Colton Pl UNIT 102",
+      "city": "Oregon City",
+      "state": "OR",
+      "zip": "97045"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "OregonCity",
+    "locationCode": "OregonCity",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/or/expresscare-oregon-city"
+  },
+  {
+    "id": "WallaWalla",
+    "name": "Providence ExpressCare - College Place",
+    "venue": "urgent_care",
+    "lat": 46.033489,
+    "lon": -118.380981,
+    "address": {
+      "line1": "1705 SE Meadowbrook St Suite 2",
+      "city": "College Place",
+      "state": "WA",
+      "zip": "99324"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "WallaWalla",
+    "locationCode": "WallaWalla",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-college-place"
+  },
+  {
+    "id": "AirwayHeights",
+    "name": "Providence ExpressCare - Airway Heights",
+    "venue": "urgent_care",
+    "lat": 47.64357,
+    "lon": -117.554322,
+    "address": {
+      "line1": "10258 W Sunset Hwy Suite 6",
+      "city": "Spokane",
+      "state": "WA",
+      "zip": "99224"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "AirwayHeights",
+    "locationCode": "AirwayHeights",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-airway-heights"
+  },
+  {
+    "id": "EverettBroadway",
+    "name": "Providence ExpressCare at Walgreens - Everett Broadway",
+    "venue": "urgent_care",
+    "lat": 47.988035,
+    "lon": -122.200925,
+    "address": {
+      "line1": "2205 Broadway",
+      "city": "Everett",
+      "state": "WA",
+      "zip": "98201"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "EverettBroadway",
+    "locationCode": "EverettBroadway",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-everett-broadway"
+  },
+  {
+    "id": "Ruby",
+    "name": "Providence ExpressCare - Ruby",
+    "venue": "urgent_care",
+    "lat": 47.672066,
+    "lon": -117.409012,
+    "address": {
+      "line1": "105 E Mission Ave Suite D",
+      "city": "Spokane",
+      "state": "WA",
+      "zip": "99202"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Ruby",
+    "locationCode": "Ruby",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-ruby"
+  },
+  {
+    "id": "IndianTrail",
+    "name": "Providence ExpressCare - Indian Trail",
+    "venue": "urgent_care",
+    "lat": 47.740324,
+    "lon": -117.488579,
+    "address": {
+      "line1": "9027 N Indian Trail Rd",
+      "city": "Spokane",
+      "state": "WA",
+      "zip": "99208"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "IndianTrail",
+    "locationCode": "IndianTrail",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-indian-trail"
+  },
+  {
+    "id": "LakeStevens",
+    "name": "Providence ExpressCare at Walgreens - Lake Stevens",
+    "venue": "urgent_care",
+    "lat": 48.002763,
+    "lon": -122.108756,
+    "address": {
+      "line1": "718 91st Ave NE",
+      "city": "Lake Stevens",
+      "state": "WA",
+      "zip": "98258"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "LakeStevens",
+    "locationCode": "LakeStevens",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-lake-stevens"
+  },
+  {
+    "id": "LincolnHeights",
+    "name": "Providence ExpressCare - Lincoln Heights",
+    "venue": "urgent_care",
+    "lat": 47.629118,
+    "lon": -117.368388,
+    "address": {
+      "line1": "2923 E 29th Ave",
+      "city": "Spokane",
+      "state": "WA",
+      "zip": "99223"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "LincolnHeights",
+    "locationCode": "LincolnHeights",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-lincoln-heights"
+  },
+  {
+    "id": "Queensgate",
+    "name": "Kadlec ExpressCare - Queensgate",
+    "venue": "urgent_care",
+    "lat": 46.25908,
+    "lon": -119.306699,
+    "address": {
+      "line1": "2564 Queensgate Dr",
+      "city": "Richland",
+      "state": "WA",
+      "zip": "99352"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Queensgate",
+    "locationCode": "Queensgate",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/kadlec/expresscare-queensgate"
+  },
+  {
+    "id": "Missoulasouthgate",
+    "name": "Providence ExpressCare – Brooks and Reserve",
+    "venue": "urgent_care",
+    "lat": 46.837166,
+    "lon": -114.036065,
+    "address": {
+      "line1": "3624 Brooks St STE 101",
+      "city": "Missoula",
+      "state": "MT",
+      "zip": "59801"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Denver",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "Missoulasouthgate",
+    "locationCode": "Missoulasouthgate",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/mt/expresscare-brooks-and-reserve"
+  },
+  {
+    "id": "EverettBroadway",
+    "name": "Providence ExpressCare at Walgreens - Everett Broadway",
+    "venue": "urgent_care",
+    "lat": 47.988035,
+    "lon": -122.200925,
+    "address": {
+      "line1": "2205 Broadway",
+      "city": "Everett",
+      "state": "WA",
+      "zip": "98201"
+    },
+    "pediatricFriendly": false,
+    "timeZone": "America/Los_Angeles",
+    "weeklyHours": {
+      "Sun": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Mon": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Tue": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Wed": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Thu": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Fri": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ],
+      "Sat": [
+        {
+          "open": "08:00",
+          "close": "20:00"
+        }
+      ]
+    },
+    "departmentUrlName": "EverettBroadway",
+    "locationCode": "EverettBroadway",
+    "siteUrl": "https://www.providence.org/locations/urgent-care/wa/expresscare-murphys-corner"
+  }
+]
