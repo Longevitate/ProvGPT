@@ -223,13 +223,9 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       if (!r.ok) throw new Error(`findcare_http_${r.status}`);
       const facilities = await r.json();
       const arr = Array.isArray(facilities) ? facilities : [];
-      const first = arr[0] || {};
-      const lat = Number(first?.lat || (payload as any)?.lat || 0) || 0;
-      const lon = Number(first?.lon || (payload as any)?.lon || 0) || 0;
       return {
-        content: [{ type: "text", text: `Showing ${arr.length} options.` }],
-        structuredContent: { results: arr, lat, lon, venue: (payload as any)?.venue || "urgent_care" }
-      } as any;
+        content: [{ type: "text", text: JSON.stringify({ results: arr, count: arr.length }) }]
+      };
     }
     case "get_availability_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/availability`, {
@@ -238,7 +234,10 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
         body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(`availability_http_${r.status}`);
-      return await r.json();
+      const slots = await r.json();
+      return {
+        content: [{ type: "text", text: JSON.stringify(slots) }]
+      };
     }
     case "book_appointment_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/book`, {
@@ -247,7 +246,10 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
         body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(`book_http_${r.status}`);
-      return await r.json();
+      const bookingResult = await r.json();
+      return {
+        content: [{ type: "text", text: JSON.stringify(bookingResult) }]
+      };
     }
     default:
       throw new Error(`Unknown tool: ${name}`);
@@ -270,7 +272,7 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
   switch (reqBody.method) {
     case "initialize": {
       return makeResponse(reqBody, {
-        protocolVersion: "2025-03-26",
+        protocolVersion: "2024-11-05",
         capabilities: {
           tools: {
             listChanged: true,
