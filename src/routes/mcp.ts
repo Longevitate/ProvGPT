@@ -21,6 +21,7 @@ interface ToolDefinition {
   name: string;
   description: string;
   inputSchema: Record<string, unknown>;
+  _meta?: Record<string, unknown>;
 }
 
 const tools: ToolDefinition[] = [
@@ -41,7 +42,7 @@ const tools: ToolDefinition[] = [
   {
     name: "find_care_v1",
     description:
-      "Single call to find nearby care after collecting basics. Provide zip (preferred) or lat/lon, venue, and optional radiusMiles (default 40). Returns Providence facilities sorted by distance with ids equal to departmentUrlName; booking links are constructed as scheduling.care.psjhealth.org using that id. Use this one tool after clarifying age and location; avoid calling other tools.",
+      "Single call to find nearby care after collecting basics. Provide zip (preferred) or lat/lon, venue, and optional radiusMiles (default 40). Returns Providence facilities sorted by distance; UI renders timeslots.",
     inputSchema: {
       type: "object",
       required: ["venue"],
@@ -61,6 +62,12 @@ const tools: ToolDefinition[] = [
       },
       additionalProperties: false,
     },
+    _meta: {
+      "openai/outputTemplate": "ui://find-care/widget.html",
+      "openai/widgetAccessible": true,
+      "openai/toolInvocation/invoking": "Finding nearby care…",
+      "openai/toolInvocation/invoked": "Found nearby care.",
+    }
   },
   {
     name: "get_availability_v1",
@@ -75,6 +82,7 @@ const tools: ToolDefinition[] = [
       },
       additionalProperties: false,
     },
+    _meta: { "openai/widgetAccessible": true }
   },
   {
     name: "book_appointment_v1",
@@ -89,23 +97,68 @@ const tools: ToolDefinition[] = [
       },
       additionalProperties: false,
     },
+    _meta: { "openai/widgetAccessible": true }
   },
 ];
 
 const COMPONENT_RESOURCE = {
-  uri: "component://find-care",
-  name: "find-care-component",
-  mimeType: "text/tsx",
+  uri: "ui://find-care/widget.html",
+  name: "find-care-widget",
+  mimeType: "text/html+skybridge",
 };
 
 // SSE removed - using static JSON responses only
 
-function componentSource(): string | null {
-  const filePath = path.join(process.cwd(), "apps", "find-care", "component.tsx");
-  if (!fs.existsSync(filePath)) {
-    return null;
+function componentHtml(): string {
+  const css = `
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 8px; }
+  .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; margin: 8px 0; }
+  .row { display:flex; justify-content:space-between; align-items:center; }
+  .slots { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .btn { display:inline-block; padding:6px 10px; border-radius:6px; background:#00338e; color:#fff; text-decoration:none; font-size:12px; }
+  .muted { color:#6b7280; font-size:12px; }
+  .title { font-weight:600; }
+  `;
+  const js = `
+  async function callTool(name, args) {
+    if (!window.openai || !window.openai.actions || !window.openai.actions.call) return null;
+    try { return await window.openai.actions.call(name, args); } catch { return null; }
   }
-  return fs.readFileSync(filePath, "utf-8");
+  function el(tag, attrs={}, children=[]) { const e = document.createElement(tag); Object.assign(e, attrs); children.forEach(c=>e.appendChild(c)); return e; }
+  function text(s){ return document.createTextNode(s); }
+  async function render() {
+    const root = document.getElementById('root');
+    root.innerHTML = '';
+    const data = (window.openai && window.openai.toolOutput) || {};
+    const facilities = Array.isArray(data.results) ? data.results : [];
+    if (facilities.length === 0) { root.appendChild(el('div', { innerText: 'No results' })); return; }
+    for (const f of facilities) {
+      const card = el('div', { className: 'card' });
+      const header = el('div', { className: 'row' }, [
+        el('div', { className: 'title', innerText: f.name || f.id }),
+        el('div', { className: 'muted', innerText: ((f.distance||0).toFixed ? f.distance.toFixed(1) : String(f.distance||'')) + ' mi' })
+      ]);
+      const addr = el('div', { className: 'muted', innerText: [f?.address?.line1, f?.address?.city, f?.state, f?.address?.zip].filter(Boolean).join(', ') });
+      const slots = el('div', { className: 'slots' });
+      card.appendChild(header);
+      card.appendChild(addr);
+      card.appendChild(slots);
+      root.appendChild(card);
+      slots.innerText = 'Loading...';
+      const avail = await callTool('get_availability_v1', { facilityId: f.id, days: 7, serviceCode: 'urgent-care' });
+      const list = (avail && avail.slots) ? avail.slots.slice(0, 8) : [];
+      slots.innerHTML = '';
+      if (list.length === 0) { slots.innerText = 'No slots'; continue; }
+      for (const s of list) {
+        const a = el('a', { className: 'btn', href: `https://scheduling.care.psjhealth.org/retail?timeSlot=${encodeURIComponent(s)}&departmentUrlName=${encodeURIComponent(f.id)}&brand=providence`, target: '_blank' });
+        a.innerText = new Date(s).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        slots.appendChild(a);
+      }
+    }
+  }
+  window.addEventListener('load', render);
+  `;
+  return `<!doctype html><html><head><meta charset="utf-8"/><style>${css}</style></head><body><div id="root"></div><script type="module">${js}</script></body></html>`;
 }
 
 const MCP_BASE_URL = (process.env.PUBLIC_BASE_URL && process.env.PUBLIC_BASE_URL.trim() !== "")
@@ -145,25 +198,11 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       const facilities = await r.json();
       const arr = Array.isArray(facilities) ? facilities : [];
       const first = arr[0] || {};
-      const lat = Number(first?.lat || payload?.lat || 0) || 0;
-      const lon = Number(first?.lon || payload?.lon || 0) || 0;
+      const lat = Number(first?.lat || (payload as any)?.lat || 0) || 0;
+      const lon = Number(first?.lon || (payload as any)?.lon || 0) || 0;
       return {
-        __render: {
-          type: "component",
-          resource: COMPONENT_RESOURCE.uri,
-          props: {
-            query: "Find care",
-            lat,
-            lon,
-            venue: String((payload as any)?.venue || "urgent_care"),
-            acceptsInsurancePlanId: (payload as any)?.acceptsInsurancePlanId,
-            results: arr,
-          },
-          actions: {
-            getAvailability: { name: "get_availability_v1" },
-            onBook: { name: "book_appointment_v1" },
-          },
-        },
+        content: [{ type: "text", text: `Showing ${arr.length} options.` }],
+        structuredContent: { results: arr, lat, lon, venue: (payload as any)?.venue || "urgent_care" }
       } as any;
     }
     case "get_availability_v1": {
@@ -223,6 +262,7 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
           name: tool.name,
           description: tool.description,
           inputSchema: tool.inputSchema,
+          _meta: tool._meta,
         })),
       });
     }
@@ -238,21 +278,9 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
         });
       }
       try {
-        const result = await callTool(name, args);
-        if ((result as any)?.__render) {
-          const render = (result as any).__render;
-          return makeResponse(reqBody, {
-            content: [
-              {
-                type: "ui",
-                component: {
-                  resource: render.resource,
-                  props: render.props,
-                  actions: render.actions,
-                },
-              },
-            ],
-          });
+        const result: any = await callTool(name, args);
+        if (result && (result.content || result.structuredContent)) {
+          return makeResponse(reqBody, result);
         }
         return makeResponse(reqBody, {
           content: [
@@ -289,13 +317,6 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
           message: "Resource not found",
         });
       }
-      const source = componentSource();
-      if (source == null) {
-        return makeResponse(reqBody, undefined, {
-          code: -32004,
-          message: "Component source unavailable",
-        });
-      }
       return makeResponse(reqBody, {
         resource: {
           uri,
@@ -309,7 +330,14 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
             mimeType: COMPONENT_RESOURCE.mimeType,
             mime_type: COMPONENT_RESOURCE.mimeType,
             type: "text",
-            text: source,
+            text: componentHtml(),
+            _meta: {
+              "openai/widgetCSP": {
+                connect_domains: ["https://provgpt.azurewebsites.net"],
+                resource_domains: ["https://*.oaistatic.com"],
+              },
+              "openai/widgetDescription": "List nearby Providence locations with timeslots; buttons open the scheduler.",
+            }
           },
         ],
       });
@@ -369,12 +397,12 @@ mcpRouter.get("/", (_req, res) => {
     protocolVersion: "2025-03-26",
     capabilities: {
       tools: {
-        listChanged: false,
+        listChanged: true,
       },
     },
     serverInfo: {
       name: "providence_ai_booking",
-      version: "0.1.0",
+      version: "0.1.1",
     },
   });
 });
