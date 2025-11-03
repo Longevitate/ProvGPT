@@ -86,6 +86,8 @@ app.get("/robots*.txt", (_req, res) => {
 });
 app.use("/api/triage", triageRouter);
 app.use("/api/search-facilities", searchFacilitiesRouter);
+// Optional alias for future endpoint naming
+app.use("/api/find-care", searchFacilitiesRouter);
 app.use("/api/availability", availabilityRouter);
 app.use("/api/book", bookRouter);
 app.use("/mcp", mcpRouter);

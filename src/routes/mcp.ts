@@ -59,7 +59,7 @@ const tools: ToolDefinition[] = [
     },
   },
   {
-    name: "search_facilities_v1",
+    name: "find_care_v1",
     description: "Find Providence care options near a location with filters.",
     inputSchema: {
       type: "object",
@@ -68,7 +68,7 @@ const tools: ToolDefinition[] = [
         lat: { type: "number" },
         lon: { type: "number" },
         zip: { type: "string" },
-        radiusMiles: { type: "number", default: 15 },
+        radiusMiles: { type: "number", default: 40 },
         venue: {
           type: "string",
           enum: ["urgent_care", "er", "primary_care", "virtual"],
@@ -127,8 +127,11 @@ function componentSource(): string | null {
   return fs.readFileSync(filePath, "utf-8");
 }
 
+const MCP_BASE_URL = (process.env.PUBLIC_BASE_URL && process.env.PUBLIC_BASE_URL.trim() !== "")
+  ? process.env.PUBLIC_BASE_URL
+  : `http://127.0.0.1:${String(process.env.PORT || 8080)}`;
+
 async function callTool(name: string, args: Record<string, unknown> | undefined) {
-  // Use in-process implementations to avoid HTTP fetch issues in Azure
   const payload = args ?? {};
 
   switch (name) {
@@ -143,98 +146,40 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       };
     }
     case "triage_v1": {
-      // Simple in-process triage logic
-      const { symptoms, age } = payload as { symptoms?: string; age?: number };
-      if (!symptoms || typeof age !== 'number') {
-        throw new Error("Missing required parameters: symptoms and age");
-      }
-      
-      const symptomsLower = symptoms.toLowerCase();
-      let venue = "urgent_care";
-      let redFlag = false;
-      let rationale = "Based on symptoms and age, urgent care is appropriate.";
-      
-      // Check for red flags
-      if (symptomsLower.includes("chest pain") || symptomsLower.includes("shortness of breath")) {
-        venue = "er";
-        redFlag = true;
-        rationale = "Red flag detected. For safety, recommend Emergency Department.";
-      } else if (symptomsLower.includes("severe") || age < 2 || age > 75) {
-        venue = "er";
-        rationale = "Age or severity factors recommend Emergency Room evaluation.";
-      }
-      
-      return {
-        correlationId: randomUUID(),
-        venue,
-        rationale,
-        redFlag,
-      };
+      const r = await fetch(`${MCP_BASE_URL}/api/triage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(`triage_http_${r.status}`);
+      return await r.json();
     }
-    case "search_facilities_v1": {
-      // Mock search results
-      const { venue, zip } = payload as { venue?: string; zip?: string };
-      if (!venue) {
-        throw new Error("Missing required parameter: venue");
-      }
-      
-      const mockFacilities = [
-        {
-          id: "prov_anc_er",
-          name: "Providence Alaska Medical Center ER",
-          venue: "er",
-          address: "3200 Providence Dr, Anchorage, AK 99508",
-          distance: 2.3,
-          isOpen: true,
-        },
-        {
-          id: "prov_anc_urgent",
-          name: "Providence Urgent Care - Midtown",
-          venue: "urgent_care",
-          address: "1700 E Bogard Rd, Wasilla, AK 99654",
-          distance: 8.7,
-          isOpen: true,
-        },
-      ].filter(f => f.venue === venue);
-      
-      return {
-        correlationId: randomUUID(),
-        results: mockFacilities,
-        totalFound: mockFacilities.length,
-      };
+    case "find_care_v1": {
+      const r = await fetch(`${MCP_BASE_URL}/api/search-facilities`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(`findcare_http_${r.status}`);
+      return await r.json();
     }
     case "get_availability_v1": {
-      // Mock availability
-      const { facilityId } = payload as { facilityId?: string };
-      if (!facilityId) {
-        throw new Error("Missing required parameter: facilityId");
-      }
-      
-      const mockSlots = [
-        { id: "slot_001", date: "2025-11-01", time: "09:00", available: true },
-        { id: "slot_002", date: "2025-11-01", time: "10:00", available: true },
-        { id: "slot_003", date: "2025-11-01", time: "11:00", available: true },
-      ];
-      
-      return {
-        correlationId: randomUUID(),
-        facilityId,
-        slots: mockSlots,
-      };
+      const r = await fetch(`${MCP_BASE_URL}/api/availability`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(`availability_http_${r.status}`);
+      return await r.json();
     }
     case "book_appointment_v1": {
-      // Mock booking
-      const { facilityId, slotId } = payload as { facilityId?: string; slotId?: string };
-      if (!facilityId || !slotId) {
-        throw new Error("Missing required parameters: facilityId and slotId");
-      }
-      
-      return {
-        correlationId: randomUUID(),
-        bookingId: `BOOK-${Date.now()}`,
-        status: "confirmed",
-        message: "Appointment booked successfully (mock)",
-      };
+      const r = await fetch(`${MCP_BASE_URL}/api/book`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(`book_http_${r.status}`);
+      return await r.json();
     }
     default:
       throw new Error(`Unknown tool: ${name}`);

@@ -12,13 +12,13 @@ export const triage_v1 = {
   })
 };
 
-export const search_facilities_v1 = {
-  name: "search_facilities_v1",
+export const find_care_v1 = {
+  name: "find_care_v1",
   description: "Find Providence care options near a location with filters.",
   parameters: z.object({
     lat: z.number(),
     lon: z.number(),
-    radiusMiles: z.number().default(15),
+    radiusMiles: z.number().default(40),
     venue: z.enum(["urgent_care","er","primary_care","virtual"]),
     acceptsInsurancePlanId: z.string().optional(),
     openNow: z.boolean().optional(),

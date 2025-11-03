@@ -44,11 +44,66 @@ availabilityRouter.post("/", (req, res) => {
     if (!parsed.success)
         return res.status(400).json({ error: parsed.error.flatten() });
     const { facilityId, serviceCode, days } = parsed.data;
-    const fac = getFacilities().find((f) => f.id === facilityId);
-    if (!fac)
-        return res.status(404).json({ error: "facility_not_found" });
-    const seed = hashString(`${facilityId}:${serviceCode}`);
-    const rng = mulberry32(seed);
-    const slots = nextSlotsWithinDays(fac.timeZone, fac.weeklyHours, new Date(), days, 3, 6, rng);
-    res.json({ facilityId, serviceCode, slots });
+    // Try Kyruus mapping first
+    const kyruusPath = path.join(process.cwd(), "data", "kyruus.locations.json");
+    const overridesPath = path.join(process.cwd(), "data", "kyruus.overrides.json");
+    let kyruusFacilities = [];
+    let overrides = { locationCodeOverrides: {} };
+    if (fs.existsSync(kyruusPath)) {
+        try {
+            kyruusFacilities = JSON.parse(fs.readFileSync(kyruusPath, "utf-8"));
+        }
+        catch { }
+    }
+    if (fs.existsSync(overridesPath)) {
+        try {
+            overrides = JSON.parse(fs.readFileSync(overridesPath, "utf-8"));
+        }
+        catch { }
+    }
+    const ky = kyruusFacilities.find((x) => String(x.id) === String(facilityId));
+    const dept = ky?.departmentUrlName || ky?.id;
+    const locOverride = overrides?.locationCodeOverrides?.[dept || ""];
+    const locationCode = locOverride || dept;
+    const useKyruusApi = Boolean(locationCode);
+    async function fetchKyruusSlots() {
+        const url = `https://providencekyruus.azurewebsites.net/api/getprovinnovatetimeslots?location_code=${encodeURIComponent(locationCode)}&visitType=default`;
+        const r = await fetch(url);
+        if (!r.ok)
+            throw new Error(`timeslots_http_${r.status}`);
+        const j = await r.json();
+        const dates = j?.timeslots?.dates || [];
+        const slots = [];
+        for (const d of dates) {
+            for (const t of (d?.times || [])) {
+                if (t?.timeslot)
+                    slots.push(String(t.timeslot));
+            }
+        }
+        return slots;
+    }
+    async function respond() {
+        if (useKyruusApi) {
+            try {
+                const slots = await fetchKyruusSlots();
+                if (Array.isArray(slots) && slots.length > 0) {
+                    return res.json({ facilityId, serviceCode, slots });
+                }
+            }
+            catch {
+                // fall through to mock
+            }
+        }
+        // Mock fallback
+        const fac = getFacilities().find((f) => f.id === facilityId);
+        if (!fac)
+            return res.status(404).json({ error: "facility_not_found" });
+        const seed = hashString(`${facilityId}:${serviceCode}`);
+        const rng = mulberry32(seed);
+        const slots = nextSlotsWithinDays(fac.timeZone, fac.weeklyHours, new Date(), days, 3, 6, rng);
+        return res.json({ facilityId, serviceCode, slots });
+    }
+    // Kick off async work
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    respond();
 });

@@ -1,4 +1,4 @@
-import { triage_v1, search_facilities_v1, get_availability_v1, book_appointment_v1 } from "./tools.js";
+import { triage_v1, find_care_v1, get_availability_v1, book_appointment_v1 } from "./tools.js";
 
 export default {
   id: "find-care-demo",
@@ -17,7 +17,7 @@ export default {
       }
     },
     {
-      ...search_facilities_v1,
+      ...find_care_v1,
       handler: {
         endpoint: "https://provgpt.azurewebsites.net/api/search-facilities",
         method: "POST",
