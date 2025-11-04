@@ -40,7 +40,7 @@ const tools: ToolDefinition[] = [
     },
   },
   {
-    name: "find_care_v1",
+    name: "search_facilities_v1",
     description: "Find nearby Providence care facilities by location and venue type.",
     inputSchema: {
       type: "object",
@@ -214,7 +214,7 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       if (!r.ok) throw new Error(`triage_http_${r.status}`);
       return await r.json();
     }
-    case "find_care_v1": {
+    case "search_facilities_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/search-facilities`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -278,7 +278,7 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
   switch (reqBody.method) {
     case "initialize": {
       return makeResponse(reqBody, {
-        protocolVersion: "2024-11-05",
+        protocolVersion: "2025-03-26",
         capabilities: {
           tools: {
             listChanged: true,
@@ -314,7 +314,6 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       }
       try {
         const result: any = await callTool(name, args);
-        console.log(`[MCP] Tool ${name} result:`, JSON.stringify(result, null, 2));
         if (result && (result.content || result.structuredContent || result.ui)) {
           return makeResponse(reqBody, result);
         }
