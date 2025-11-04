@@ -223,9 +223,15 @@ async function callTool(name: string, args: Record<string, unknown> | undefined)
       if (!r.ok) throw new Error(`findcare_http_${r.status}`);
       const facilities = await r.json();
       const arr = Array.isArray(facilities) ? facilities : [];
-      return {
-        content: [{ type: "text", text: JSON.stringify({ results: arr, count: arr.length }) }]
-      };
+      const first = arr[0] || {};
+      const lat = Number(first?.lat || (payload as any)?.lat || 0) || 0;
+      const lon = Number(first?.lon || (payload as any)?.lon || 0) || 0;
+      return wrapWithUI({
+        results: arr,
+        lat,
+        lon,
+        venue: (payload as any)?.venue || "urgent_care"
+      });
     }
     case "get_availability_v1": {
       const r = await fetch(`${MCP_BASE_URL}/api/availability`, {
@@ -308,7 +314,8 @@ async function handleJsonRpc(reqBody: JsonRpcRequest): Promise<JsonRpcResponse> 
       }
       try {
         const result: any = await callTool(name, args);
-        if (result && (result.content || result.structuredContent)) {
+        console.log(`[MCP] Tool ${name} result:`, JSON.stringify(result, null, 2));
+        if (result && (result.content || result.structuredContent || result.ui)) {
           return makeResponse(reqBody, result);
         }
         return makeResponse(reqBody, {
